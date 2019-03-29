@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 	printf("Quick Sort:\n");
 	memcpy(a, cp, sizeof(int) * numsSize);
  	printf("Before Sort: ");
-    array_print(nums, numsSize);
+	array_print(nums, numsSize);
 	quick_sort(nums, 0, numsSize-1);
 	printf("After Sort: ");
 	array_print(nums, numsSize);
@@ -97,8 +97,8 @@ int main(int argc, char** argv)
 	printf("\n");
 
 	printf("Merge Sort - BUC:\n");
-    memcpy(a, cp, sizeof(int) * numsSize);
-    printf("Before Sort: ");
+	memcpy(a, cp, sizeof(int) * numsSize);
+	printf("Before Sort: ");
  	array_print(nums, numsSize);
  	merge_sort_buc(nums, numsSize);
  	printf("After Sort: ");
