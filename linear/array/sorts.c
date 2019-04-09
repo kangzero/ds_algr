@@ -5,7 +5,8 @@
  *
  * Version: v1.0
  * History:
- * V1.0     Created by Ning Kang     03/28/2019
+ * V1.0     Created by Ning Kang        03/28/2019
+ * V1.1     callback function           04/08/2019
  *
  * Copyright(c) 2019 by Ning Kang
  *
@@ -34,10 +35,20 @@ int main(int argc, char** argv)
     int* nums = a;
     int numsSize = 9;
 
+    //func pointer declaration
+    void (*p_func)(int*, int) = NULL;
+
+    //definition of lib func
+    void sorting(int* v, int len, void (*p_func)(int*, int))
+    {
+        return (*p_func)(v, len);
+    }
+
     printf("Bubble Sort:\n");
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    bubble_sort(nums, numsSize);
+    sorting(nums, numsSize, &bubble_sort);
+    //bubble_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -46,7 +57,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    selection_sort(nums, numsSize);
+    sorting(nums, numsSize, &selection_sort);
+    //selection_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -55,7 +67,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    insertion_sort(nums, numsSize);
+    sorting(nums, numsSize, &insertion_sort);
+    //insertion_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -73,7 +86,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    heap_sort(nums, numsSize);
+    sorting(nums, numsSize, &heap_sort);
+    //heap_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -82,7 +96,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    shell_sort(nums, numsSize);
+    sorting(nums, numsSize, &shell_sort);
+    //shell_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -100,7 +115,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    merge_sort_buc(nums, numsSize);
+    sorting(nums, numsSize, &merge_sort_buc);
+    //merge_sort_buc(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -112,7 +128,8 @@ int main(int argc, char** argv)
     printf("Count Sort:\n");
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    count_sort(nums, numsSize);
+    sorting(nums, numsSize, &count_sort);
+    //count_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
