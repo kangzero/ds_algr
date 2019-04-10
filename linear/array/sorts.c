@@ -28,6 +28,15 @@
 #define SORT_DES 0
 #define SORT_ASC 1
 
+//func pointer declaration
+void (*p_func)(int*, int) = NULL;
+
+//definition of lib func
+void sorting(int* v, int len, void (*p_func)(int*, int))
+{
+    return (*p_func)(v, len);
+}
+
 int main(int argc, char** argv)
 {
     int a[] = {2, 3, 1, 0, 4, -1, 5, 7, 6};
@@ -35,14 +44,6 @@ int main(int argc, char** argv)
     int* nums = a;
     int numsSize = 9;
 
-    //func pointer declaration
-    void (*p_func)(int*, int) = NULL;
-
-    //definition of lib func
-    void sorting(int* v, int len, void (*p_func)(int*, int))
-    {
-        return (*p_func)(v, len);
-    }
 
     printf("Bubble Sort:\n");
     printf("Before Sort: ");
