@@ -29,7 +29,9 @@
 #define SORT_ASC 1
 
 //func pointer declaration
-void (*p_func)(int*, int) = NULL;
+//void (*p_func)(int*, int) = NULL;
+typedef void (*tp_func)(int*, int);
+tp_func p_func;
 
 //definition of lib func
 void sorting(int* v, int len, void (*p_func)(int*, int))
@@ -44,11 +46,12 @@ int main(int argc, char** argv)
     int* nums = a;
     int numsSize = 9;
 
-
     printf("Bubble Sort:\n");
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    sorting(nums, numsSize, &bubble_sort);
+
+    p_func = &bubble_sort;
+    sorting(nums, numsSize, p_func);
     //bubble_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
@@ -58,7 +61,8 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    sorting(nums, numsSize, &selection_sort);
+    p_func = &selection_sort;
+    sorting(nums, numsSize, p_func);
     //selection_sort(nums, numsSize);
     printf("After Sort: ");
     array_print(nums, numsSize);
