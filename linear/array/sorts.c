@@ -30,8 +30,23 @@
 
 //func pointer declaration
 //void (*p_func)(int*, int) = NULL;
-typedef void (*tp_func)(int*, int);
-tp_func p_func;
+//typedef void (*tp_func)(int*, int);
+//tp_func p_func;
+
+//function pointers struct
+typedef struct _OP_S{
+    void (*p_bubble)(int*, int);
+    void (*p_select)(int*, int);
+    void (*p_insert)(int*, int);
+}OP_S;
+
+//operation pointer init
+void init_op(OP_S *op_s)
+{
+    op_s->p_bubble = &bubble_sort;
+    op_s->p_select = &selection_sort;
+    op_s->p_insert = &insertion_sort;
+}
 
 //definition of lib func
 void sorting(int* v, int len, void (*p_func)(int*, int))
@@ -46,13 +61,13 @@ int main(int argc, char** argv)
     int* nums = a;
     int numsSize = 9;
 
+    OP_S *op_s = malloc(sizeof(OP_S));
+    init_op(op_s);
+
     printf("Bubble Sort:\n");
     printf("Before Sort: ");
     array_print(nums, numsSize);
-
-    p_func = &bubble_sort;
-    sorting(nums, numsSize, p_func);
-    //bubble_sort(nums, numsSize);
+    sorting(nums, numsSize, op_s->p_bubble);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -61,9 +76,7 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    p_func = &selection_sort;
-    sorting(nums, numsSize, p_func);
-    //selection_sort(nums, numsSize);
+    sorting(nums, numsSize, op_s->p_select);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
@@ -72,8 +85,7 @@ int main(int argc, char** argv)
     memcpy(a, cp, sizeof(int) * numsSize);
     printf("Before Sort: ");
     array_print(nums, numsSize);
-    sorting(nums, numsSize, &insertion_sort);
-    //insertion_sort(nums, numsSize);
+    sorting(nums, numsSize, op_s->p_insert);
     printf("After Sort: ");
     array_print(nums, numsSize);
     printf("\n");
