@@ -17,24 +17,19 @@
 #ifndef SORTS_H
 #define SORTS_H
 
+#include <stdint.h>
+
 void radix_sort(int* nums, int numsSize);
 void bucket_sort(int* nums, int numsSize);
 void count_sort(int* nums, int numsSize);
 void merge_sort_buc(int* nums, int numsSize);
-void merge_group(int* nums, int numsSize, int slen);
-void merge_sort_ubc(int* nums, int start, int end);
-void merge(int* nums, int start, int mid, int end);
+void merge_sort_ubc(int* nums, int numsSize);
 void shell_sort(int* nums, int numsSize);
-void group_sort(int* nums, int numsSize, int i, int gap);
 void heap_sort(int* nums, int numsSize);
-void heapmax_down(int* nums, int start, int end);
-void heapmin_down(int* nums, int start, int end);
-void quick_sort(int* nums, int left, int right);
+void quick_sort(int* nums, int numsSize);
 void insertion_sort(int* nums, int numsSize);
 void selection_sort(int* nums, int numsSize);
 void bubble_sort(int* nums, int numsSize);
-void swap(int *x, int *y);
-void array_print(int *nums, int numsSize);
 
 #endif
 
