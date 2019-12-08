@@ -8,6 +8,7 @@
  * V1.0     Created by Ning Kang        03/28/2019
  * V1.1     callback function           04/08/2019
  * V1.2     simplify test function      12/06/2019
+ * V1.3     add sorting runtime         12/07/2019
  *
  * Copyright(c) 2019 by Ning Kang
  *
@@ -20,6 +21,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include "sorts.h"
 
 //#define _DEBUG
@@ -58,24 +61,34 @@ void log_array(int *nums, int numsSize);
 void heapmax_down(int* nums, int start, int end);
 void heapmin_down(int* nums, int start, int end);
 void group_sort(int* nums, int numsSize, int i, int gap);
-void log_string(char *str);
-
 
 int test_arr[] = {2, 3, 1, 0, 4, 9, 5, 7, 6};
 
 void main(int argc, char** argv)
 {
+    struct timeval start;
+    struct timeval end;
+    unsigned long runtime = 0;
+
     int numsSize = NELEMS(test_arr);
     int *nums = (int*)malloc(numsSize * sizeof(int));
+    printf("Test Array: ");
     log_array(test_arr, numsSize);
+
+    printf("Sorting result:\n");
     for (int i = 0; i < NELEMS(sorts); i++) {
         //restore the test array after sorting
         memmove(nums, test_arr, numsSize * sizeof(int));
-        log_string(sorts[i].name);
         //sorting test
+        gettimeofday(&start, NULL);
         sorts[i].sort_opcode(nums, numsSize);
+        gettimeofday(&end, NULL);
+        runtime = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
+        //output test result
+        printf("%s runtime: %lu ms: ", sorts[i].name, runtime);
         log_array(nums, numsSize);
     }
+
     return;
 }
 
@@ -388,9 +401,3 @@ void log_array(int* nums, int numsSize)
     printf("\n");
 }
 
-void log_string(char *str)
-{
-    while(*str != '\0')
-        printf("%c", *str++);
-    printf("\n");
-}
