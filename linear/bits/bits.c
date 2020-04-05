@@ -120,9 +120,14 @@ int main(int argc, char* argv[])
     int16_t n16 = 0x1234;
     printf("0x1234 sitch to big endian: 0x%04x\n\n", endianness_swInt16(n16));
 
+    // itoa test
+    uint32_t num = 0xff;
+    char s1[33], s2[33], s3[33];
+    printf("Hex: %s\nDec: %s\nBin: %s\n\n", itoa(num, s1, 16), itoa(num, s2, 10), itoa(num, s3, 2));
+
     //reverse bits of 32 bits data
     //change the value of macro definition for different implementation test
-    uint32_t num = 0x12345678;
+    num = 0x12345678;
     char str[33]; //32 bits + '\0'
     printf("%s -->\n", itoa(num, str, 2));
     uint32_t rev = reverse_bits32(num);
