@@ -134,6 +134,37 @@ uint32_t swap_bits(uint32_t x, uint32_t p1, uint32_t p2, uint32_t n)
     return res;
 }
 
+// Swap two bits in a given integer
+uint32_t swap_two_bits(uint32_t n, uint32_t p1, uint32_t p2)
+{
+    return n ^ (((n >> p1) & 0x1) ^ ((n >> p2) & 0x1));
+}
+
+#define MSB_SHIFT   0
+#define MSB_ADDONE  1
+
+// most significant set bit
+uint32_t msb_int32(uint32_t n)
+{
+#if MSB_SHIFT
+    if (n == 0) return 0;
+    int msb = 0;
+    while (n != 0) {
+        n >>= 1;
+        msb++;
+    }
+    return (1 << (msb - 1));
+#elif MSB_ADDONE
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    n += 1;
+    return (n >> 1);
+#endif
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -171,6 +202,15 @@ int main(int argc, char* argv[])
     num = 47;
     uint32_t res = swap_bits(num, 1, 5, 3);
     printf("%s -> \n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    memset(s1, 0, sizeof(s1));
+    memset(s2, 0, sizeof(s2));
+
+    // msb test
+    num = 233;
+    res = msb_int32(num);
+    printf("%s: the msb is:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    memset(s1, 0, sizeof(s1));
+    memset(s2, 0, sizeof(s2));
 
     return 1;
 }
