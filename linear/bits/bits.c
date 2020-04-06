@@ -186,6 +186,15 @@ uint32_t toggole_middle_bits(uint32_t n)
     return n ^ set;
 }
 
+// toggle between two index
+uint32_t toggle_between_idx(uint32_t n, uint32_t l, uint32_t r)
+{
+    // calculating a number having r number of bits and
+    // bits in the range l to r are the only set bits
+    int num = ((1 << r) - 1) ^ ((1 << (l - 1)) - 1);
+    // toggle bits in the range l to r in n
+    return (n ^ num);
+}
 
 int main(int argc, char* argv[])
 {
@@ -237,6 +246,13 @@ int main(int argc, char* argv[])
     num = 0xea;
     res = toggole_middle_bits(num);
     printf("%s: after toggle middle bits:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    memset(s1, 0, sizeof(s1));
+    memset(s2, 0, sizeof(s2));
+
+    // toggle middle bits test
+    num = 0xa5ea;
+    res = toggle_between_idx(num, 3, 10);
+    printf("%s: after toggle between l and r:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
