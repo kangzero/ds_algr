@@ -196,6 +196,30 @@ uint32_t toggle_between_idx(uint32_t n, uint32_t l, uint32_t r)
     return (n ^ num);
 }
 
+#define HAMMING_SHIFT   1
+#define MINUS_ONE       0
+
+// hamming weight (count 1s in a number)
+uint32_t hamming_weight(uint32_t n)
+{
+#if HAMMING_SHIFT
+    int cnt = 0;
+    while (n != 0) {
+        if (n & 0x1)
+            cnt++;
+        n >>= 1;
+    }
+    return cnt;
+#elif MINUS_ONE
+    int cnt = 0;
+    while (n != 0) {
+        cnt++;
+        n &= n - 1;
+    }
+    return cnt;
+#endif
+}
+
 int main(int argc, char* argv[])
 {
     //endianess test
