@@ -60,7 +60,7 @@ char* itoa(int num, char* str, int base)
 }
 
 // string to int32
-int32_t atoi(char* s)
+int32_t k_atoi(char* s)
 {
     uint32_t n = strlen(s);
     uint32_t idx = 0;

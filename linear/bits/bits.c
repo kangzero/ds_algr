@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bits.h"
-#include "../common.h"
+#include "../includes/common.h"
 
 // endianness check - implementation in Linux
 static union {char c[4]; long mylong;} endian_test = {{'l', '?', '?', 'b'}};
@@ -64,6 +64,7 @@ const uint8_t reverse[256] = {
   0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
   0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF
 };
+
 // reverse bits of 32 bits data
 uint32_t reverse_bits32(uint32_t n)
 {
@@ -105,6 +106,35 @@ uint32_t reverse_bits32(uint32_t n)
 #endif
 }
 
+/* Given a number x and two position (from the right side) in a binary
+ * represantation of x, swaps n bits at given two positions (given that the
+ * two sets of bits do not overlap)
+ * Example:
+ * Input -  x = 47 (00101111)
+ *          p1 = 1 (2nd bit from the right)
+ *          p2 = 5 (6th bit from the right)
+ *          n = 3 (# of bits to be swapped)
+ * Output - 11100011
+ * The 3 bits starting from the 2nd bit from the right side are swapped with
+ * 3 bits starting from the 6th bit from the right side
+ * */
+uint32_t swap_bits(uint32_t x, uint32_t p1, uint32_t p2, uint32_t n)
+{
+    // move all bits of first set to rightmost side
+    uint32_t set1 = (x >> p1) & ((1U << n) - 1);
+    // move all bits of second set to rightmost side
+    uint32_t set2 = (x >> p2) & ((1U << n) - 1);
+    // xor two sets
+    uint32_t xor = set1 ^ set2;
+    // put xor bits back to the original positions
+    xor = (xor << p1) | (xor << p2);
+    // xor the xor with the originial number so that the two ses are swapped
+    uint32_t res = x ^ xor;
+
+    return res;
+}
+
+
 int main(int argc, char* argv[])
 {
     //endianess test
@@ -124,15 +154,23 @@ int main(int argc, char* argv[])
     uint32_t num = 0xff;
     char s1[33], s2[33], s3[33];
     printf("Hex: %s\nDec: %s\nBin: %s\n\n", itoa(num, s1, 16), itoa(num, s2, 10), itoa(num, s3, 2));
+    memset(s1, 0, 33*sizeof(char));
+    memset(s2, 0, 33*sizeof(char));
+    memset(s3, 0, 33*sizeof(char));
 
-    //reverse bits of 32 bits data
-    //change the value of macro definition for different implementation test
+    // reverse bits of 32 bits data
+    // change the value of macro definition for different implementation test
     num = 0x12345678;
-    char str[33]; //32 bits + '\0'
-    printf("%s -->\n", itoa(num, str, 2));
     uint32_t rev = reverse_bits32(num);
-    printf("%s\n\n", itoa(rev, str, 2));
-    printf("%d, %d \n", num, rev);
+    printf("%s ->\n%s\n\n", itoa(num, s1, 2), itoa(rev, s2, 2));
+    //printf("%d, %d \n", num, rev);
+    memset(s1, 0, sizeof(s1));
+    memset(s2, 0, sizeof(s2));
+
+    // swap bits test
+    num = 47;
+    uint32_t res = swap_bits(num, 1, 5, 3);
+    printf("%s -> \n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
 
     return 1;
 }

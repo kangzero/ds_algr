@@ -3,5 +3,5 @@
 #include <stdint.h>
 
 char* itoa(int num, char* str, int base);
-int32_t atoi(char* s);
+int32_t k_atoi(char* s);
 #endif
