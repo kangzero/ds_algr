@@ -165,6 +165,27 @@ uint32_t msb_int32(uint32_t n)
 #endif
 }
 
+/* toggle bits except msb and lsb
+ * Example:
+ * Input - 10   BIN: 1 0 1 0
+ * Output - 12  BIN: 1 1 0 0
+ * */
+uint32_t toggole_middle_bits(uint32_t n)
+{
+    if (n == 1) return 1;
+
+    // set the middle bits
+    uint32_t set = n | n >> 1;
+    set |= set >> 2;
+    set |= set >> 4;
+    set |= set >> 8;
+    set |= set >> 16;
+    set = (set >> 1) ^ 1;
+
+    // xor with set
+    return n ^ set;
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -209,6 +230,13 @@ int main(int argc, char* argv[])
     num = 233;
     res = msb_int32(num);
     printf("%s: the msb is:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    memset(s1, 0, sizeof(s1));
+    memset(s2, 0, sizeof(s2));
+
+    // toggle middle bits test
+    num = 0xea;
+    res = toggole_middle_bits(num);
+    printf("%s: after toggle middle bits:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
