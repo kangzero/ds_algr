@@ -220,7 +220,11 @@ uint32_t hamming_weight(uint32_t n)
 #endif
 }
 
+#ifdef _MODULAR_TEST
 int main(int argc, char* argv[])
+#elif defined _FULL_SYS
+int bits_test(void)
+#endif
 {
     //endianess test
     if (ENDIANNESS == 'l')

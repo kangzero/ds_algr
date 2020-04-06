@@ -13,4 +13,5 @@ uint32_t msb_int32(uint32_t n);
 uint32_t toggle_middle_bits(uint32_t n);
 uint32_t toggle_between_idx(uint32_t n, uint32_t l, uint32_t r);
 uint32_t hamming_weight(uint32_t n);
+int bits_test(void);
 #endif

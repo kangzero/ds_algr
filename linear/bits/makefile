@@ -1,3 +1,4 @@
+CFLAGS += -D _MODULAR_TEST
 VPATH = bits : ../includes
 
 objects = bits.o common.o \
