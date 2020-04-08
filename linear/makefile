@@ -1,6 +1,6 @@
 CFLAGS += -D _FULL_SYS
 
-objects = main.o includes/common.o bits/bits.o 
+objects = main.o common.o bits/bits.o mem/alloc.o
 
 cc = gcc
 
@@ -9,9 +9,11 @@ linear : $(objects)
 
 main.o : main.c 
 	cc -c $^
-bits.o : bits/bits.c bits/bits.h ../includes/common.h 
+bits.o : bits/bits.c bits/bits.h ../common.h 
 	cc -c $^
-common.o : includes/common.c includes/common.h 
+common.o : common.c common.h 
+	cc -c $^
+alloc.o : mem/alloc.c mem/alloc.h
 	cc -c $^
 
 .PHONY : clean

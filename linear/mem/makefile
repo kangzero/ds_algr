@@ -1,16 +1,15 @@
 # makefile for modular test 
 CFLAGS += -D _MODULAR_TEST
-VPATH = bits : ../
+VPATH = 
 
-objects = bits.o common.o \
+objects = alloc.o \
 
 cc = gcc
 
 testBits : $(objects)
-		cc -o testBits $(objects)
+		cc -o testAlloc $(objects)
 
-bits.o : bits.h
-common.o : common.h
+bits.o : alloc.h
 
 .PHONY : clean
 clean:

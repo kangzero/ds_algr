@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bits.h"
-#include "../includes/common.h"
+#include "../common.h"
 
 // endianness check - implementation in Linux
 static union {char c[4]; long mylong;} endian_test = {{'l', '?', '?', 'b'}};

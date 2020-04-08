@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "mem.h"
+#include <unistd.h>
+#include "alloc.h"
 
 //#define _BUFFER_ALLOC_FAILED_TEST
 #define MAX_SIZE_BUF    1000U
@@ -22,7 +23,7 @@ static void* buffer_alloc(size_t bytes)
     return NULL;
 }
 
-// Buffer free - need free memory by reverse order
+// Buffer free - MUST free memory by reverse order
 static void buffer_free(char* p_free)
 {
     if (p_free >= Buf && p_free < Buf + MAX_SIZE_BUF) {
@@ -31,7 +32,110 @@ static void buffer_free(char* p_free)
     }
 }
 
-int main(int argc, char* argv[])
+#define align_up(num, align)   (((num) + ((align) - 1)) & ~((align) - 1))    \
+
+bool has_initialized = 0;
+void *p_memory_start;
+void *last_valid_address;
+
+typedef struct mem_control_block {
+    char is_valid;
+    uint32_t size;
+} MCB;
+
+// malloc init
+void nk__malloc_init(void)
+{
+    // grab the last valid address from OS
+    last_valid_address = sbrk(0); // get the location of program break for 0 input
+    printf("last_valid_address: %p\n", last_valid_address);
+    // we don't have any mem to manage yet, so set the beginning to be last_valid_address
+    p_memory_start = last_valid_address;
+    // initialized flag
+    has_initialized = 1;
+    return;
+}
+
+// nk_malloc
+void* nk_malloc(size_t size)
+{
+    // memory address we will return, set to 0 untill find suitable location
+    void *mem_location;
+    // hold where we are looking at in memory
+    void *cur_location;
+    // same as current_location, but cast to a mem_control_block
+    MCB *cur_location_mcb;
+
+    if (!has_initialized)
+        nk__malloc_init();
+
+    //size = align_up(size + sizeof(MCB), 4);
+    size = size + sizeof(0);
+    mem_location = NULL;
+    cur_location_mcb = p_memory_start;
+    // keep going until we have searched all allocated space
+    while (cur_location != last_valid_address) {
+        cur_location_mcb = (MCB*)cur_location;
+        if (cur_location_mcb->is_valid) {
+            if (cur_location_mcb->size >= size) {
+                // found an valid memory block and return the current address
+                cur_location_mcb->is_valid = 0; // core dumped
+                mem_location = cur_location;
+                break;
+            }
+            // move to next block to see if could grab an valid memory block
+            cur_location = cur_location + cur_location_mcb->size;
+        }
+    }
+    if (!mem_location) {
+        if (sbrk(size) == (void*)-1)
+            return NULL;
+        mem_location = last_valid_address;
+        last_valid_address += size;
+        cur_location_mcb = mem_location;
+        cur_location_mcb->is_valid = 0; // core dumped
+        cur_location_mcb->size = size;
+    }
+
+    mem_location += sizeof(MCB);
+
+    return mem_location;
+}
+
+// nk_free
+void nk_free(void* p_free)
+{
+    MCB *mcb = p_free - sizeof(MCB);
+    mcb->is_valid = 1;
+    //mcb->size = 0;
+    return;
+}
+
+// nk_malloc & nk_free test
+int nk_malloc_free_test(void)
+{
+    printf("111\n");
+    nk__malloc_init();
+    printf("222\n");
+
+    char *p1;
+    if ((p1 = nk_malloc(100)) == NULL) {
+        printf("sssssss\n");
+        return -1;
+    }
+    printf("p1 = %p", p1);
+    MCB *mcb = (void*)p1 - sizeof(MCB);
+    printf("333\n");
+    printf("%p, block size: %u, block valid: %d\n", p1, mcb->size, mcb->is_valid);
+    nk_free(p1);
+    printf("After free: block valid = %d\n", mcb->is_valid);
+    p1 = NULL;
+
+    return 1;
+}
+
+//buffer_alloc and buffer_free test
+int buffer_alloc_free_test(void)
 {
     printf("Buf address = %p\nAvailable size = %d\n", Buf, MAX_SIZE_BUF);
     printf("p_buf address = %p\nAvailable size = %d\n\n", p_buf, available_buffer_size);
@@ -114,8 +218,21 @@ int main(int argc, char* argv[])
     printf("p_buf address   : %p\n", p_buf);
     printf("Available size  : %d\n\n", available_buffer_size);
 
+
+}
+
+#ifdef _MODULAR_TEST
+int main(int argc, char* argv[])
+{
+    //printf("buffer_alloc & buffer_free test: \n");
+    //buffer_alloc_free_test();
+
+    printf("nk_malloc & nk_free test: \n");
+    nk_malloc_free_test();
+
     return 1;
 }
+#endif
 
 
 
