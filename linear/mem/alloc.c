@@ -4,6 +4,11 @@
 #include <unistd.h>
 #include "alloc.h"
 
+#define align_up(num, align)   (((num) + ((align) - 1)) & ~((align) - 1))    \
+
+typedef uint16_t offset_t;
+#define PTR_OFFSET_SZ   sizeof(offset_t)    \
+
 //#define _BUFFER_ALLOC_FAILED_TEST
 #define MAX_SIZE_BUF    1000U
 
@@ -31,8 +36,6 @@ static void buffer_free(char* p_free)
         p_buf = p_free;
     }
 }
-
-#define align_up(num, align)   (((num) + ((align) - 1)) & ~((align) - 1))    \
 
 bool has_initialized = 0;
 void *p_memory_start;
@@ -72,15 +75,14 @@ void* nk_malloc(size_t size)
     if (!has_initialized)
         nk__malloc_init();
 
+    // this align_up can not gaurantee memory alignment since the address returns by sbrk might not be the boundry
     size = align_up(size + sizeof(MCB), 4);
-    //size = size + sizeof(MCB);
     mem_location = NULL;
     cur_location = p_memory_start;
 
     // keep going until we have searched all allocated space
     while (cur_location != NULL && cur_location != last_valid_address) {
         cur_location_mcb = (MCB*)cur_location;
-        //printf("cur_location_mcb = %p, is_valid = %d, size = %u\n", cur_location_mcb, cur_location_mcb->is_valid, cur_location_mcb->size);
         if (cur_location_mcb->is_valid) {
             if (cur_location_mcb->size >= size) {
                 // found an valid memory block and return the current address
@@ -93,13 +95,12 @@ void* nk_malloc(size_t size)
         cur_location = cur_location + cur_location_mcb->size;
 
     }
+
     if (mem_location == NULL)  {
         if (sbrk(size) == (void*)-1)
             return NULL;
         mem_location = last_valid_address;
-        //printf("mem_location:           %p\n", mem_location);
         last_valid_address += size;
-        //printf("last_valid_address:     %p\n", last_valid_address);
         cur_location_mcb = mem_location;
         cur_location_mcb->is_valid = 0;
         cur_location_mcb->size = size;
@@ -119,9 +120,92 @@ void nk_free(void* p_free)
     return;
 }
 
+// the API in POSIX : void *memalign(size_t alignment, size_t size);
+void* malloc_aligned(size_t align, size_t size)
+{
+    void *mem_aligned = NULL;
+
+    // align need to be a power of 2 since align_up operates on powers of two
+    if (align && (align - 1) == 0)
+        return NULL;
+
+    if (align != 0 && size != 0) {
+        // PTR_OFFSET_SZ: save the alignment size, up tp 64K bytes
+        // (align - 1) : worse case padding for malloc alignment
+        void *mem_location = (void*)malloc(size + PTR_OFFSET_SZ + (align - 1));
+        if (mem_location != NULL) {
+            // add the offset size then align the resulting value to the target alignment
+            mem_aligned = (void*)align_up(((uintptr_t)mem_location + PTR_OFFSET_SZ), align);
+            // calculate the offset and store it behind the aligned pointer
+            *((offset_t*)mem_aligned - 1) = (offset_t)((uintptr_t)mem_aligned - (uintptr_t)mem_location);
+        }
+    }
+    return mem_aligned;
+}
+
+// POSIX requires that memory obtained from posix_memalign() can be freed using free()
+void free_aligned(void* p_free)
+{
+    if (p_free == NULL)
+        return;
+
+    // walk backwards from the pass-in pointer to get the pointer offset
+    offset_t offset = *((offset_t*)p_free - 1);
+
+    // get the original pointer and call free
+    void *p = (void*)((uint8_t*)p_free - offset);
+
+    free(p);
+}
+
+// malloc_aligned test
+int malloc_aligned_test(void)
+{
+    printf("\n==== Aligned Malloc and Free Test Program ====\n\n");
+
+    void *p1 = malloc(103);
+    if (p1 == NULL)
+        return -1;
+    void *p2 = malloc(1000);
+    if (p2 == NULL)
+        return -1;
+    void *p3 = malloc(7);
+    if (p3 == NULL)
+        return -1;
+
+    void *q1 = malloc_aligned(8, 100);
+    if (q1 == NULL)
+        return -1;
+    void *q2 = malloc_aligned(32, 1037);
+    if (q2 == NULL)
+        return -1;
+    void *q3 = malloc_aligned(4, 8);
+    if (q3 == NULL)
+        return -1;
+
+    printf("Raw malloc pointers w/o alignment enforced:\n");
+    printf("\t%p, %p, %p\n", p1, p2, p3);
+    printf("\tNote: you may see 4-16 bytes alignment on host PC\n");
+    printf("Aligned to 8:   %p\n", q1);
+    printf("Aligned to 32:  %p\n", q2);
+    printf("Aligned to 4:   %p\n", q3);
+    printf("%lu", (uintptr_t)q3);
+
+    free_aligned(q1), q1 = NULL;
+    free_aligned(q2), q2 = NULL;
+    free_aligned(q3), q3 = NULL;
+
+    free(p1), p1 = NULL;
+    free(p2), p2 = NULL;
+    free(p3), p3 = NULL;
+
+    return 1;
+}
 // nk_malloc & nk_free test
 int nk_malloc_free_test(void)
 {
+    printf("\n==== Private Malloc and Free Test Program ==== \n\n");
+
     nk__malloc_init();
 
     char *p1;
@@ -165,12 +249,11 @@ int nk_malloc_free_test(void)
     nk_free(p5);
     p5 = NULL;
 
-    printf("\n\
-    p1 block size: %10u   p1 block is_valid: %d \n\r\
-    p2 block size: %10u   p2 block is_Valid: %d \n\r\
-    p3 block size: %10u   p3 block is_Valid: %d \n\r\
-    p4 block size: %10u   p4 block is_Valid: %d \n\r\
-    p5 block size: %10u   p5 block is_Valid: %d \n\r\n",\
+    printf("\tp1 block size: %10u   p1 block is_valid: %d \n\r\
+    \tp2 block size: %10u   p2 block is_Valid: %d \n\r\
+    \tp3 block size: %10u   p3 block is_Valid: %d \n\r\
+    \tp4 block size: %10u   p4 block is_Valid: %d \n\r\
+    \tp5 block size: %10u   p5 block is_Valid: %d \n\r\n",\
     p1_mcb->size, p1_mcb->is_valid,\
     p2_mcb->size, p2_mcb->is_valid,\
     p3_mcb->size, p3_mcb->is_valid,\
@@ -183,6 +266,8 @@ int nk_malloc_free_test(void)
 //buffer_alloc and buffer_free test
 int buffer_alloc_free_test(void)
 {
+    printf("\n==== Buufer alloc and free test program ==== \n\n");
+
     printf("Buf address = %p\nAvailable size = %d\n", Buf, MAX_SIZE_BUF);
     printf("p_buf address = %p\nAvailable size = %d\n\n", p_buf, available_buffer_size);
 
@@ -264,19 +349,18 @@ int buffer_alloc_free_test(void)
     printf("p_buf address   : %p\n", p_buf);
     printf("Available size  : %d\n\n", available_buffer_size);
 
-
+    return 1;
 }
 
 #ifdef _MODULAR_TEST
 int main(int argc, char* argv[])
 {
-    //printf("buffer_alloc & buffer_free test: \n");
-    //buffer_alloc_free_test();
+    buffer_alloc_free_test();
 
-    printf("nk_malloc & nk_free test: \n");
     if (nk_malloc_free_test() == -1)
         printf("Error: your malloc failed!\n");
 
+    malloc_aligned_test();
     return 1;
 }
 #endif

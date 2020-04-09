@@ -226,6 +226,8 @@ int main(int argc, char* argv[])
 int bits_test(void)
 #endif
 {
+    printf("\n== Bits Manipulatation Test Program == \n");
+
     //endianess test
     if (ENDIANNESS == 'l')
         printf("This is little endian system\n");
