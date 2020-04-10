@@ -79,6 +79,17 @@ void* nk_memmove(void* s1, const void* s2, size_t n)
 
 void* nk_memset(void* dst, int c, size_t n)
 {
+#if 0 // set byte by byte
+    if (!n) return dst;
+
+    int i = 0;
+    while (i != n) {
+        *(uint8_t*)(dst + i) = c;
+        i++;
+    }
+
+    return dst;
+#else
     unsigned char *s = dst;
     size_t k;
 
@@ -99,15 +110,16 @@ void* nk_memset(void* dst, int c, size_t n)
     s += k;
     n -= k;
     n &= -4;
-    n / 4;
+    n /= 4;
 
     uint32_t *ws = (uint32_t*)s;
     uint32_t wc = c & 0xff;
-    wc |= ((wc << 8) | (wc << 16) | (wc | 24));
+    wc |= ((wc << 8) | (wc << 16) | (wc << 24));
 
-    for (; n; n--, s++) *ws = wc;
+    for (; n; n--, ws++) *ws = wc;
 
     return dst;
+#endif
 }
 
 int mem_test(void)
@@ -135,9 +147,9 @@ int mem_test(void)
         printf("[MEM] dst == src\n");
     }
 
-    if (!memset(dst, 'k', 3*sizeof(char)))
+    if (!nk_memset(dst, 'k', 13*sizeof(char)))
         return -1;
-    *(dst + len + 1) = '\0';
+    //*(dst + len + 1) = '\0';
     printf("[MEM] Set string to all k:\n[MEM] src: %s\n[MEM] dst: %s\n", src, dst);
 
     if (!nk_memmove(dst, src, len+1))
