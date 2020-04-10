@@ -2,14 +2,16 @@
 CFLAGS += -D _MODULAR_TEST
 VPATH = 
 
-objects = alloc.o \
+objects = alloc.o mem.o rbuffer.o 	\
 
 cc = gcc
 
-testBits : $(objects)
-		cc -o testAlloc $(objects)
+testMem : $(objects)
+		cc -o testMem $(objects)
 
-bits.o : alloc.h
+alloc.o 	: alloc.h
+mem.o 		: mem.h
+rbuffer.o 	: rbuffer.h
 
 .PHONY : clean
 clean:

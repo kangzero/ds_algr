@@ -1,5 +1,5 @@
-#ifndef _RING_BUFFER_H_
-#define _RIGN_BUFFER_H_
+#ifndef _R_BUFFER_H_
+#define _R_BUFFER_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -26,5 +26,6 @@ bool ring_buf_empty(ring_buf_t *rbuf);
 bool ring_buf_full(ring_buf_t *rbuf);
 size_t ring_buf_capacity(ring_buf_t *rbuf);
 size_t ring_buf_size(ring_buf_t *rbuf);
+int ring_buffer_test(void);
 
 #endif

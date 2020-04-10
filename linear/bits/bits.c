@@ -14,13 +14,13 @@ char endianness_check(void)
     uint32_t a = 0x12345678;
     char *p = (char*)&a;
     if (*p == 0x78) {
-        printf("little endian system\n");
+        printf("[BITS] little endian system\n");
         return 1;
     } else if (*p == 0x12) {
-        printf("big endian system\n");
+        printf("[BITS] big endian system\n");
         return 0;
     }
-    printf("Error: unknown endianness! \n");
+    printf("[BITS] Error: unknown endianness! \n");
     return -1;
 }
 
@@ -226,25 +226,25 @@ int main(int argc, char* argv[])
 int bits_test(void)
 #endif
 {
-    printf("\n== Bits Manipulatation Test Program == \n");
+    printf("\n[BITS] ==== Bits Manipulatation Test Program ==== \n");
 
     //endianess test
     if (ENDIANNESS == 'l')
-        printf("This is little endian system\n");
+        printf("[BITS] This is little endian system\n");
     else if (ENDIANNESS == 'b')
-        printf("This is big endian system\n");
+        printf("[BITS] This is big endian system\n");
     else
-        printf("unknown endianness!\n");
+        printf("[BITS] Unknown endianness!\n");
     //endianness_check(); // my implementation passed test also
     int32_t n32 = 0x12ffff78;
-    printf("0x12ffff78 switch to big endian: 0x%08x\n", endianness_swInt32(n32));
+    printf("[BITS] 0x12ffff78 switch to big endian: 0x%08x\n", endianness_swInt32(n32));
     int16_t n16 = 0x1234;
-    printf("0x1234 sitch to big endian: 0x%04x\n\n", endianness_swInt16(n16));
+    printf("[BITS] 0x1234 sitch to big endian: 0x%04x\n\n", endianness_swInt16(n16));
 
     // itoa test
     uint32_t num = 0xff;
     char s1[33], s2[33], s3[33];
-    printf("Hex: %s\nDec: %s\nBin: %s\n\n", itoa(num, s1, 16), itoa(num, s2, 10), itoa(num, s3, 2));
+    printf("[BITS] Hex: %s\n[BITS] Dec: %s\n[BITS] Bin: %s\n\n", itoa(num, s1, 16), itoa(num, s2, 10), itoa(num, s3, 2));
     memset(s1, 0, 33*sizeof(char));
     memset(s2, 0, 33*sizeof(char));
     memset(s3, 0, 33*sizeof(char));
@@ -253,7 +253,7 @@ int bits_test(void)
     // change the value of macro definition for different implementation test
     num = 0x12345678;
     uint32_t rev = reverse_bits32(num);
-    printf("%s ->\n%s\n\n", itoa(num, s1, 2), itoa(rev, s2, 2));
+    printf("[BITS] %s ->\n%s\n\n", itoa(num, s1, 2), itoa(rev, s2, 2));
     //printf("%d, %d \n", num, rev);
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
@@ -261,28 +261,28 @@ int bits_test(void)
     // swap bits test
     num = 47;
     uint32_t res = swap_bits(num, 1, 5, 3);
-    printf("%s -> \n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    printf("[BITS] %s -> \n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // msb test
     num = 233;
     res = msb_int32(num);
-    printf("%s: the msb is:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    printf("[BITS] %s: the msb is:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // toggle middle bits test
     num = 0xea;
     res = toggole_middle_bits(num);
-    printf("%s: after toggle middle bits:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    printf("[BITS] %s: after toggle middle bits:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // toggle middle bits test
     num = 0xa5ea;
     res = toggle_between_idx(num, 3, 10);
-    printf("%s: after toggle between l and r:\n%s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    printf("[BITS] %s: after toggle between l and r:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 

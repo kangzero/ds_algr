@@ -1,8 +1,8 @@
-# makefile for modular test 
+# bits module makefile
 CFLAGS += -D _MODULAR_TEST
-VPATH = bits : ../
+#VPATH = testBits : ../
 
-objects = bits.o common.o \
+objects = bits.o ../common.o \
 
 cc = gcc
 
