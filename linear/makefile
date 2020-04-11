@@ -1,6 +1,7 @@
 CFLAGS += -D _FULL_SYS
 
-objects = main.o common.o bits/bits.o mem/alloc.o mem/mem.o mem/rbuffer.o 	\
+objects = main.o common.o array/sorts.o bits/bits.o \
+		  mem/alloc.o mem/mem.o mem/rbuffer.o 	\
 
 cc = gcc
 
@@ -8,6 +9,8 @@ testMain : $(objects)
 	cc -o testMain $(objects)
 
 main.o 		: main.c 
+	cc -c $^
+sorts.o 	: array/sorts.h 
 	cc -c $^
 bits.o 		: bits/bits.h ../common.h 
 	cc -c $^

@@ -19,17 +19,18 @@
 
 #include <stdint.h>
 
-void radix_sort(int* nums, int numsSize);
-void bucket_sort(int* nums, int numsSize);
-void count_sort(int* nums, int numsSize);
-void merge_sort_buc(int* nums, int numsSize);
-void merge_sort_ubc(int* nums, int numsSize);
-void shell_sort(int* nums, int numsSize);
-void heap_sort(int* nums, int numsSize);
-void quick_sort(int* nums, int numsSize);
-void insertion_sort(int* nums, int numsSize);
-void selection_sort(int* nums, int numsSize);
-void bubble_sort(int* nums, int numsSize);
+void radix_sort(int* nums, int n);
+void bucket_sort(int* nums, int n);
+void count_sort(int* nums, int n);
+void merge_sort_buc(int* nums, int n);
+void merge_sort_ubc(int* nums, int n);
+void shell_sort(int* nums, int n);
+void heap_sort(int* nums, int n);
+void quick_sort(int* nums, int n);
+void insertion_sort(int* nums, int n);
+void selection_sort(int* nums, int n);
+void bubble_sort(int* nums, int n);
+int array_sorting_test(void);
 
 #endif
 

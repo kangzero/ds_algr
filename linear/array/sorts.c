@@ -33,63 +33,66 @@
 
 #define NELEMS(array) (sizeof(array) / sizeof(array[0])) \
 
-typedef struct _SORTS_OPCODE {
+typedef struct {
     char* name;
-    void (*sort_opcode)(int*, int);
-} SORTS_OPCODE;
+    void (*sf)(int*, int);
+} sorts_f;
 
-SORTS_OPCODE sorts[] = {
-    {"BubbleSort\0", &bubble_sort},
-    {"SelectSort\0", &selection_sort},
-    {"InsertSort\0", &insertion_sort},
-    {"QuickSort\0", &quick_sort},
-    {"HeapSort\0", &heap_sort},
-    {"ShellSort\0", &shell_sort},
-    {"MergeSortUBC\0", &merge_sort_ubc},
-    {"MergeSortBUC\0", &merge_sort_buc},
-    {"CountSort\0", &count_sort},
-    {"BucketSort\0", &bucket_sort},
-    {"RadixSort\0", &radix_sort}
+sorts_f sorts[] = {
+    {"Bubble Sort\0", &bubble_sort},
+    {"Select Sort\0", &selection_sort},
+    {"Insert Sort\0", &insertion_sort},
+    {"Quick Sort\0", &quick_sort},
+    {"Heap Sort\0", &heap_sort},
+    {"Shell Sort\0", &shell_sort},
+    {"Merge SortUBC\0", &merge_sort_ubc},
+    {"Merge SortBUC\0", &merge_sort_buc},
+    {"Count Sort\0", &count_sort},
+    {"Bucket Sort\0", &bucket_sort},
+    {"Radix Sort\0", &radix_sort}
 };
 
 void quick_sort_helper(int* nums, int left, int right);
 void merge_sort_ubc_helper(int* num, int start, int end);
-void merge_group(int* nums, int numsSize, int slen);
+void merge_group(int* nums, int n, int slen);
 void merge(int* nums, int start, int mid, int end);
 void swap(int *x, int *y);
-void log_array(int *nums, int numsSize);
+void log_array(int *nums, int n);
 void heapmax_down(int* nums, int start, int end);
 void heapmin_down(int* nums, int start, int end);
-void group_sort(int* nums, int numsSize, int i, int gap);
+void group_sort(int* nums, int n, int i, int gap);
 
 int test_arr[] = {2, 3, 1, 0, 4, 9, 5, 7, 6};
 
-void main(int argc, char** argv)
+#ifdef _MODULAR_TEST
+int main(int argc, char** argv)
+#elif defined _FULL_SYS
+int array_sorting_test(void)
+#endif
 {
     struct timeval start;
     struct timeval end;
     unsigned long runtime = 0;
 
-    int numsSize = NELEMS(test_arr);
-    int *nums = (int*)malloc(numsSize * sizeof(int));
-    printf("Test Array: ");
-    log_array(test_arr, numsSize);
+    int len = NELEMS(test_arr);
+    int *nums = (int*)malloc(len * sizeof(int));
+    printf("\n[ARRAY] ==== Array Sorting Test Program ==== \n\n");
+    log_array(test_arr, len);
 
-    printf("Sorting result:\n");
     for (int i = 0; i < NELEMS(sorts); i++) {
         //restore the test array after sorting
-        memmove(nums, test_arr, numsSize * sizeof(int));
+        memmove(nums, test_arr, len * sizeof(int));
         //sorting test
         gettimeofday(&start, NULL);
-        sorts[i].sort_opcode(nums, numsSize);
+        sorts[i].sf(nums, len);
         gettimeofday(&end, NULL);
         runtime = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
         //output test result
-        printf("%s runtime: %lu ms: ", sorts[i].name, runtime);
-        log_array(nums, numsSize);
+        printf("[ARRAY] %s runtime: %lu ms: \n", sorts[i].name, runtime);
+        log_array(nums, len);
     }
 
-    return;
+    return 1;
 }
 
 void radix_sort(int* nums, int numsSize)
@@ -107,19 +110,19 @@ void bucket_sort(int* nums, int numsSize)
 //you could split array into 2 part, transfer the negative
 //number to positive number, and then merge together
 //will implement this later
-void count_sort(int* nums, int numsSize)
+void count_sort(int* nums, int n)
 {
-    if ((nums == NULL) || (numsSize == 0)) return;
+    if (!nums || !n) return;
 
     int max = 0;
     int k = 0;
-    for (int i = 0; i < numsSize; i++)
+    for (int i = 0; i < n; i++)
         max = (max > nums[i]) ? max : nums[i];
     int* count = calloc((max+1), sizeof(int));
-    for (int i = 0; i < numsSize; i++)
+    for (int i = 0; i < n; i++)
         count[nums[i]]++;
 #if SORT_ASC
-    for (int i = 0; i < (max+1); i++)
+    for (int i = 0; i < max + 1; i++)
 #elif SORT_DES
     for (int i = max; i >= 0; i--)
 #endif
@@ -131,23 +134,23 @@ void count_sort(int* nums, int numsSize)
 }
 
 //merge sort buttom up computation
-void merge_sort_buc(int* nums, int numsSize)
+void merge_sort_buc(int* nums, int n)
 {
-    if ((nums == NULL) || (numsSize <= 0)) return;
+    if (!nums || !n) return;
 
-    for (int i = 1; i < numsSize; i *= 2)
-        merge_group(nums, numsSize, i);
+    for (int i = 1; i < n; i *= 2)
+        merge_group(nums, n, i);
 }
 
 //merge groups
-void merge_group(int* nums, int numsSize, int slen)
+void merge_group(int* nums, int n, int slen)
 {
     int i = 0;
-    for (i = 0; (i+2*slen-1) < numsSize; i += 2*slen)
-        merge(nums, i, i+slen-1, i+2*slen-1);
+    for (i = 0; i + 2 * slen - 1 < n; i += 2 * slen)
+        merge(nums, i, i + slen - 1, i + 2 * slen - 1);
 
-    if ((i+slen-1) < (numsSize-1))
-        merge(nums, i, i+slen-1, numsSize-1);
+    if (i + slen - 1 < n - 1)
+        merge(nums, i, i + slen - 1, n - 1);
 }
 
 //merge sort up buttom computation
@@ -160,8 +163,8 @@ void merge_sort_ubc_helper(int* nums, int start, int end)
 {
     if (nums == NULL || start >= end) return;
 #ifdef _debug
-    printf("[merge_sort_ubc enter!\n");
-    printf("start = %d, end = %d\n", start, end);
+    printf("[ALLOC] merge_sort_ubc enter!\n");
+    printf("[ALLOC] start = %d, end = %d\n", start, end);
 #endif
     int mid = (start + end) / 2;
     merge_sort_ubc_helper(nums, start, mid);
@@ -175,7 +178,7 @@ void merge(int* nums, int start, int mid, int end)
     int *tmp = malloc((end-start+1) * sizeof(int));
     if (tmp == NULL)
     {
-        printf("[merge] - tmp malloc failed !!! \n");
+        printf("[ALLOC] Merge: tmp malloc failed !!! \n");
         return;
     }
     int i = start;
@@ -201,24 +204,23 @@ void merge(int* nums, int start, int mid, int end)
     for (i = 0; i < k; i++)
         nums[start+i] = tmp[i];
 
-    free(tmp);
-    tmp = NULL;
+    free(tmp), tmp = NULL;
 }
 
 //shell sort
-void shell_sort(int* nums, int numsSize)
+void shell_sort(int* nums, int n)
 {
-    for (int gap = numsSize/2; gap > 0; gap /= 2) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {
         for (int i = 0; i < gap; i++) {
-            group_sort(nums, numsSize, i, gap);
+            group_sort(nums, n, i, gap);
         }
     }
 }
 
 //group sort for every step
-void group_sort(int* nums, int numsSize, int start, int gap)
+void group_sort(int* nums, int n, int start, int gap)
 {
-    for (int i = (start+gap); i < numsSize; i += gap) {
+    for (int i = start + gap; i < n; i += gap) {
 #if SORT_ASC
         if (nums[i] < nums[i-gap]) {
 #elif SORT_DES
@@ -240,34 +242,32 @@ void group_sort(int* nums, int numsSize, int start, int gap)
 }
 
 //heap sort
-void heap_sort(int* nums, int numsSize)
+void heap_sort(int* nums, int n)
 {
+    for (int i = n / 2 - 1; i >= 0; i--)
 #if SORT_ASC
-    for (int i = ((numsSize/2)-1); i >= 0; i--)
-        heapmax_down(nums, i, (numsSize-1));
-
-    for (int i = (numsSize-1); i >= 0; i--) {
-        swap(&nums[0], &nums[i]);
-        heapmax_down(nums, 0, (i-1));
-    }
+        heapmax_down(nums, i, n - 1);
 #elif SORT_DES
-    for (int i = ((numsSize/2)-1); i >= 0; i--)
-        heapmin_down(nums, i, (numsSize-1));
-    for (int i = (numsSize-1); i >= 0; i--){
-        swap(&nums[0], &nums[i]);
-        heapmin_down(nums, 0, (i-1));
-    }
+        heapmin_down(nums, i, n - 1);
 #endif
+    for (int i = n - 1; i >= 0; i--) {
+        swap(&nums[0], &nums[i]);
+#if SORT_ASC
+        heapmax_down(nums, 0, i - 1);
+#elif SORT_DES
+        heapmin_down(nums, 0, i - 1);
+#endif
+    }
 }
 
-//build up max heap
+// build up max heap
 void heapmax_down(int* nums, int start, int end)
 {
     int p = start; //parent node
     int cur = nums[p];
 
-    for (int l = (2*p + 1); l <= end; p = l, l = 2*l+1) {
-        if ((l < end) && (nums[l] < nums[l+1]))
+    for (int l = 2 * p + 1; l <= end; p = l, l = 2 * l + 1) {
+        if (l < end && nums[l] < nums[l+1])
             l++; //max of 2 l child & r child
         if (cur >= nums[l]) {
             break;
@@ -278,14 +278,14 @@ void heapmax_down(int* nums, int start, int end)
     }
 }
 
-//build up min heap
+// build up min heap
 void heapmin_down(int* nums, int start, int end)
 {
     int p = start;
     int cur = nums[p];
 
-    for (int l = (2*p+1); l <= end; p = l, l = 2*l+1) {
-        if ((l < end) && (nums[l] > nums[l+1]))
+    for (int l = 2 * p+ 1; l <= end; p = l, l = 2 * l + 1) {
+        if (l < end && nums[l] > nums[l+1])
             l++;
         if (cur <= nums[l]) {
             break;
@@ -296,10 +296,10 @@ void heapmin_down(int* nums, int start, int end)
     }
 }
 
-//quick sort
-void quick_sort(int* nums, int numsSize)
+// quick sort
+void quick_sort(int* nums, int n)
 {
-    quick_sort_helper(nums, 0, numsSize-1);
+    quick_sort_helper(nums, 0, n - 1);
 }
 
 void quick_sort_helper(int* nums, int left, int right)
@@ -330,11 +330,11 @@ void quick_sort_helper(int* nums, int left, int right)
     }
 }
 
-//insertion sort
-void insertion_sort (int* nums, int numsSize)
+// insertion sort
+void insertion_sort (int* nums, int n)
 {
     int key;
-    for (int i = 1; i < numsSize; i++) {
+    for (int i = 1; i < n; i++) {
         key = nums[i];
         int j = i - 1;
 #if SORT_ASC
@@ -349,12 +349,12 @@ void insertion_sort (int* nums, int numsSize)
     }
 }
 
-//selection sort
-void selection_sort(int* nums, int numsSize)
+// selection sort
+void selection_sort(int* nums, int n)
 {
-    for (int i = 0; i < (numsSize-1); i++) {
+    for (int i = 0; i < n - 1; i++) {
         int m = i; //index of max or min element
-        for (int j = (i+1); j < numsSize; j++) {
+        for (int j = i + 1; j < n; j++) {
 #if SORT_ASC
             if (nums[j] < nums[m])
 #elif SORT_DES
@@ -362,15 +362,16 @@ void selection_sort(int* nums, int numsSize)
 #endif
                 m = j;
         }
-        swap(&nums[m], &nums[i]);
+        if (m != i)
+            swap(&nums[m], &nums[i]);
     }
 }
 
-//bubble sort
-void bubble_sort(int* nums, int numsSize)
+// bubble sort
+void bubble_sort(int* nums, int n)
 {
-    for (int i = (numsSize-1); i > 0; i--) {
-        int flag = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        char flag = 0;
         for (int j = 0; j < i; j++) {
 #ifdef SORT_ASC
             if (nums[j] > nums[j+1]) {
@@ -381,22 +382,29 @@ void bubble_sort(int* nums, int numsSize)
                 flag = 1;
             }
         }
-        if (flag == 0) break;
+        if (!flag) break;
     }
 }
 
-//swap two element
+// swap two element
 void swap(int *x, int *y)
 {
+#if 0
     int tmp = *x;
     *x = *y;
     *y = tmp;
+#else // swap 2 elemts w/o another temp variable
+    *x = *x + *y;
+    *y = *x - *y;
+    *x = *x - *y;
+#endif
 }
 
-//print elements in the array
-void log_array(int* nums, int numsSize)
+// print elements in the array
+void log_array(int* nums, int n)
 {
-    for (int i = 0; i < numsSize; i++)
+    printf("[ARRAY] The elements in the array are: ");
+    for (int i = 0; i < n; i++)
         printf("%d ", nums[i]);
     printf("\n");
 }
