@@ -1,27 +1,38 @@
 CFLAGS += -D _FULL_SYS
+VPATH = array/ \
+		bits/ \
+		mem/ \
+		linkedlist/ \
+		linkedlist/singly_list \
 
 objects = main.o common.o array/sorts.o bits/bits.o \
-		  mem/alloc.o mem/mem.o mem/rbuffer.o 	\
+		  mem/alloc.o mem/mem.o mem/rbuffer.o \
+		  linkedlist/linkedlist_test.o \
+		  linkedlist/linkedlist_algorithms.o 	\
+		  linkedlist/singly_list/singly_linkedlist.o \
 
 cc = gcc
 
 testMain : $(objects)
-	cc -o testMain $(objects)
+	cc -o testMain $^
 
 main.o 		: main.c 
-	cc -c $^
-sorts.o 	: array/sorts.h 
-	cc -c $^
-bits.o 		: bits/bits.h ../common.h 
-	cc -c $^
-common.o 	: common.c common.h 
-	cc -c $^
-alloc.o 	: mem/alloc.h
-	cc -c $^
-mem.o 		: mem/mem.h 
-	cc -c $^
-rbuffer.o 	: mem/rbuffer.h
-	cc -c $^
+#	cc -c $^
+sorts.o 	: sorts.h 
+#	cc -c $^
+bits.o 		: bits.h common.h 
+#	cc -c $^
+common.o 	: common.h 
+#	cc -c $^
+alloc.o 	: alloc.h
+#	cc -c $^
+mem.o 		: mem.h 
+#	cc -c $^
+rbuffer.o 	: rbuffer.h
+#	cc -c $^
+linkedlist_test.o : linkedlist_test.c
+linkedlist_algorithms.o : linkedlist_algorithms.h 
+singly_linkedlist.o 	:	singly_linkedlist.h 
 
 .PHONY : clean
 clean: 

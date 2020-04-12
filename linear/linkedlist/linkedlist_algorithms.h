@@ -1,6 +1,6 @@
 /********************************************************************************
  *
- * Filename: singly_linkedlist_op.h
+ * Filename: linkedlist_algorithms.h
  * Description: singly linkedlist operation head file
  *
  * Version: v1.0
@@ -15,8 +15,10 @@
  *
  ********************************************************************************/
 
-#ifndef SINGLY_LINKEDLIST_OP_H
-#define SINGLY_LINKEDLIST_OP_H
+#ifndef _LINKEDLIST_ALGORITHMS_H_
+#define _LINKEDLIST_ALGORITHMS_H_
+
+#include "singly_list/singly_linkedlist.h"
 
 ListNode* linkedlist_reverse(ListNode *head);
 

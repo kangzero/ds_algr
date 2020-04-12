@@ -8,6 +8,8 @@
 #include "mem/mem.h"
 #include "mem/rbuffer.h"
 
+extern int linkedlist_test(void);
+
 typedef enum {
     Array = 1,
     Bits,
@@ -26,6 +28,7 @@ int main(int argc, char* argv[])
     nk_malloc_free_test();
     mem_test();
     ring_buffer_test();
+    linkedlist_test();
 
     return 1;
 }

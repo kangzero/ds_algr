@@ -9,8 +9,8 @@
  *
  * Copyright(c) 2019 by Ning Kang
  *
- * This software is placed into the public domain and may be used for any purpose.  
- * However, this notice must not be changed or removed and no warranty is either 
+ * This software is placed into the public domain and may be used for any purpose.
+ * However, this notice must not be changed or removed and no warranty is either
  * expressed or implied by its publication or distribution.
  *
  ********************************************************************************/
@@ -24,9 +24,8 @@
 ListNode* create_node (int val, ListNode *next)
 {
 	ListNode *rv = malloc(sizeof(ListNode*));
-	if (rv == NULL)
-	{
-	    printf("New ListNode Malloc Failed!!!\n");
+	if (rv == NULL) {
+	    printf("[LINKEDLIST] New ListNode Malloc Failed!!!\n");
 	    return NULL;
 	}
 	rv->val = val;
@@ -38,8 +37,7 @@ ListNode* create_node (int val, ListNode *next)
 void free_list (ListNode *head)
 {
     ListNode *prev;
-    while (head)
-    {
+    while (head) {
         prev = head;
         head = head->next;
         free(prev);
@@ -49,55 +47,47 @@ void free_list (ListNode *head)
 }
 
 //Linkedlist init
-Linkedlist* linkedlist_init()
+Linkedlist* linkedlist_init(void)
 {
     Linkedlist *rv = calloc(1, sizeof(Linkedlist*));
-    if (rv == NULL)
-    {
-        printf("Linkedlist init failed!!!\n");
-	return NULL;
+    if (rv == NULL) {
+        printf("[LINKEDLIST] Linkedlist init failed!\n");
+	    return NULL;
     }
     return rv;
 }
 
 //get the val of index-th node,  if index is invalid, return -1
-int linkedlist_get (Linkedlist* obj, size_t index)
+int linkedlist_get(Linkedlist* obj, size_t index)
 {
-    if ((obj->size) <= index)
-    {
-        printf("Can't get element at invalid index!!!\n");
-        //exit(0);
-	return -1;
+    if ((obj->size) <= index){
+        printf("[LINKEDLIST] Can't get at invalid index %zd!\n", index);
+        return -1;
     }
     ListNode *cur = obj->head;
     for (int i = 0; i < index; i++)
-    {
         cur = cur->next;
-    }
-    printf("Element[%zu] is %d\n", index, cur->val);
+    printf("[LINKEDLIST] element at index %zu is %d\n", index, cur->val);
     return cur->val;
 }
 
 //add a node before the head
-void linkedlist_add_at_head (Linkedlist *obj, int val)
+void linkedlist_add_head(Linkedlist *obj, int val)
 {
     ListNode *newnode = create_node(val, obj->head);
     obj->head = newnode;
     obj->size += 1;
     if (obj->size == 1)
-    {
         obj->tail = obj->head; //d-linked;
-    }
     return;
 }
 
 //append a node at the tail of the linked list
-void linkedlist_append_at_tail (Linkedlist *obj, int val)
+void linkedlist_append_tail(Linkedlist *obj, int val)
 {
     ListNode *newnode = create_node(val, NULL);
-    if (obj->head == NULL)
-    {
-        linkedlist_add_at_head(obj, val);
+    if (obj->head == NULL) {
+        linkedlist_add_head(obj, val);
     } else if ((obj->head != NULL) && (obj->tail == NULL)) {
         obj->tail = newnode;
         obj->size += 1;
@@ -112,22 +102,22 @@ void linkedlist_append_at_tail (Linkedlist *obj, int val)
 // add a node before the idx-th node in the linked list
 // if idx == len of the linked list, append it to the end
 // if idx > len of the linked list, do nothing
-void linkedlist_insert_at_index (Linkedlist *obj, size_t index, int val)
+void linkedlist_insert(Linkedlist *obj, size_t index, int val)
 {
     if (index > (obj->size)) {
-        printf("Can't insert element at invalid index!!!\n");
+        printf("[LINKEDLIST] Can't insert at invalid index %zd!\n", index);
         return;
     }
 
-    if (index == 0) return linkedlist_add_at_head(obj, val);
+    if (index == 0)
+        return linkedlist_add_head(obj, val);
 
-    if (index == (obj->size)) return linkedlist_append_at_tail(obj, val);
+    if (index == (obj->size))
+        return linkedlist_append_tail(obj, val);
 
     ListNode *cur = obj->head;
     for (int i = 1; i < index; i++)
-    {
         cur = cur->next;
-    }
     ListNode *newnode = create_node(val, cur->next);
     cur->next = newnode;
     obj->size += 1;
@@ -135,16 +125,14 @@ void linkedlist_insert_at_index (Linkedlist *obj, size_t index, int val)
 }
 
 // delete the idx-th node in the linked list if the index is valid
-void linkedlist_delete_at_index (Linkedlist *obj, size_t index)
+void linkedlist_delete(Linkedlist *obj, size_t index)
 {
-    if (index >= obj->size)
-    {
-        printf("Can't delete element at invalid index! \n");
+    if (index < 0 || index >= obj->size) {
+        printf("[LINKEDLIST] Can't delete at invalid index %zd! \n", index);
         return;
     }
 
-    if (index == 0)
-    {
+    if (index == 0) {
         ListNode *tmp = obj->head;
         obj->head = obj->head->next;
         obj->size -= 1;
@@ -152,13 +140,10 @@ void linkedlist_delete_at_index (Linkedlist *obj, size_t index)
         return;
     }
 
-    if (index == (obj->size - 1))
-    {
+    if (index == obj->size - 1) {
         ListNode *tmp = obj->head;
         while (tmp->next != obj->tail)
-        {
             tmp = tmp->next;
-        }
         free(tmp->next);
         tmp->next = NULL;
         obj->tail = tmp;
@@ -168,9 +153,7 @@ void linkedlist_delete_at_index (Linkedlist *obj, size_t index)
 
     ListNode *tmp = obj->head;
     for (int i = 1; i < index; i++)
-    {
         tmp = tmp->next;
-    }
     ListNode *rm = tmp->next;
     tmp->next = rm->next;
     obj->size -= 1;
@@ -192,10 +175,11 @@ void linkedlist_free (Linkedlist *obj)
 void print_list (Linkedlist* obj)
 {
     if ((obj == NULL) || (obj->size == 0)) {
-        printf("This is an empty linkedlist.\n");
+        printf("[LINKEDLIST] This is an empty linkedlist.\n");
         return;
     }
     ListNode *cur = obj->head;
+    printf("[LINKEDLIST] The list is: ");
     while(cur != NULL)
     {
         printf("%d->", cur->val);
@@ -206,9 +190,10 @@ void print_list (Linkedlist* obj)
 }
 
 //print list from head node to null
-void print_listnode (ListNode* head) 
+void print_listnode (ListNode* head)
 {
     ListNode *cur = head;
+    printf("[LINKEDLIST] The elements in the list are: ");
     while(cur != NULL)
     {
         printf("%d->", cur->val);

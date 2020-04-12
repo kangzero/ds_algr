@@ -17,8 +17,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "singly_linkedlist.h"
-#include "singly_linkedlist_op.h"
+
+#include "linkedlist_algorithms.h"
 
 #define RECURSIVE 1
 #define ITERATIVE 0
