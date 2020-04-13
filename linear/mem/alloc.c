@@ -6,6 +6,9 @@
 #include "alloc.h"
 #include "mem.h"
 #include "rbuffer.h"
+#include "../log.h"
+
+#define TAG     "ALLOC"
 
 #define align_up(num, align)   (((num) + ((align) - 1)) & ~((align) - 1))    \
 
@@ -27,7 +30,7 @@ static void* buffer_alloc(size_t bytes)
         p_buf += bytes;
         return p_buf - bytes;
     }
-    printf("[ALLOC] Error: No enough available buffer to alloc! \n\n");
+    Log.w(TAG, "No enough available buffer to alloc!");
     return NULL;
 }
 
@@ -57,7 +60,7 @@ void nk__malloc_init(void)
 
     // we don't have any mem to manage yet, so set the beginning to be last_valid_address
     p_memory_start = last_valid_address;
-    printf("[ALLOC] p_memory_start :    %p\n\n", p_memory_start);
+    Log.i(TAG, "p_memory_start :    %p", p_memory_start);
 
     // initialized flag
     has_initialized = 1;
@@ -164,7 +167,7 @@ void free_aligned(void* p_free)
 // malloc_aligned test
 int malloc_aligned_test(void)
 {
-    printf("\n[ALLOC] ==== Aligned Malloc and Free Test Program ====\n\n");
+    Log.i(TAG, "==== Aligned Malloc and Free Test Start ====");
 
     void *p1 = malloc(103);
     if (p1 == NULL)
@@ -186,12 +189,12 @@ int malloc_aligned_test(void)
     if (q3 == NULL)
         return -1;
 
-    printf("[ALLOC] Raw malloc pointers w/o alignment enforced:\n");
-    printf("[ALLOC] %p\n[ALLOC] %p\n[ALLOC] %p\n", p1, p2, p3);
-    printf("[ALLOC] Note: you may see 4-16 bytes alignment on host PC\n");
-    printf("[ALLOC] Aligned to 8:   %p\n", q1);
-    printf("[ALLOC] Aligned to 32:  %p\n", q2);
-    printf("[ALLOC] Aligned to 4:   %p\n\n", q3);
+    Log.i(TAG, "Raw malloc pointers w/o alignment enforced:");
+    Log.i(TAG, "p1 = %p p2 = %p p3 = %p", p1, p2, p3);
+    Log.i(TAG, "Note: you may see 4-16 bytes alignment on host PC");
+    Log.i(TAG, "Aligned malloc to 8:   %p", q1);
+    Log.i(TAG, "Aligned malloc to 32:  %p", q2);
+    Log.i(TAG, "Aligned malloc to 4:   %p\n", q3);
 
     free_aligned(q1), q1 = NULL;
     free_aligned(q2), q2 = NULL;
@@ -201,12 +204,14 @@ int malloc_aligned_test(void)
     free(p2), p2 = NULL;
     free(p3), p3 = NULL;
 
+    Log.i(TAG, "==== Aligned Malloc and Free Test End ====\n");
+
     return 1;
 }
 // nk_malloc & nk_free test
 int nk_malloc_free_test(void)
 {
-    printf("\n[ALLOC] ==== Private Malloc and Free Test Program ==== \n\n");
+    Log.i(TAG, "==== Private Malloc and Free Test Start ====");
 
     nk__malloc_init();
 
@@ -214,105 +219,102 @@ int nk_malloc_free_test(void)
     if ((p1 = nk_malloc(100)) == NULL)
         return -1;
     MCB *p1_mcb = (void*)p1 - sizeof(MCB);
-    printf("[ALLOC] p1: %p, block size: %u, block valid: %d\n", p1, p1_mcb->size, p1_mcb->is_valid);
+    Log.i(TAG, "p1: %p, block size: %u, block valid: %d", p1, p1_mcb->size, p1_mcb->is_valid);
     nk_free(p1);
-    printf("[ALLOC] After free: p1 block valid = %d\n", p1_mcb->is_valid);
+    Log.i(TAG, "After free: p1 block valid = %d", p1_mcb->is_valid);
     p1 = NULL;
 
     int *p2;
     if ((p2 = nk_malloc(20)) == NULL)
         return -1;
     MCB *p2_mcb = (void*)p2 - sizeof(MCB);
-    printf("[ALLOC] p2: %p, block size: %u, block valid: %d\n", p2, p2_mcb->size, p2_mcb->is_valid);
+    Log.i(TAG, "p2: %p, block size: %u, block valid: %d", p2, p2_mcb->size, p2_mcb->is_valid);
     nk_free(p2);
-    printf("[ALLOC] After free: p2 block valid = %d\n", p2_mcb->is_valid);
+    Log.i(TAG, "After free: p2 block valid = %d", p2_mcb->is_valid);
     p2 = NULL;
 
     char *p3, *p4;
     if ((p3 = nk_malloc(100)) == NULL)
         return -1;
     MCB *p3_mcb = (void*)p3 - sizeof(MCB);
-    printf("[ALLOC] p3: %p, block size: %u, block valid: %d\n", p3, p3_mcb->size, p3_mcb->is_valid);
+    Log.i(TAG, "p3: %p, block size: %u, block valid: %d", p3, p3_mcb->size, p3_mcb->is_valid);
     if ((p4 = nk_malloc(1)) == NULL)
         return -1;
     MCB *p4_mcb = (void*)p4 - sizeof(MCB);
-    printf("[ALLOC] p4: %p, block size: %u, block valid: %d\n", p4, p4_mcb->size, p4_mcb->is_valid);
+    Log.i(TAG, "p4: %p, block size: %u, block valid: %d", p4, p4_mcb->size, p4_mcb->is_valid);
     nk_free(p4);
     p4 = NULL;
-    printf("[ALLOC] After free: p4 block valid = %d\n", p4_mcb->is_valid);
+    Log.i(TAG, "After free: p4 block valid = %d", p4_mcb->is_valid);
 
     int *p5;
     if ((p5 = nk_malloc(1000)) == NULL)
         return -1;
     MCB *p5_mcb = (void*)p5 - sizeof(MCB);
-    printf("[ALLOC] p5: %p, block size: %u, block valid: %d\n", p5, p5_mcb->size, p5_mcb->is_valid);
+    Log.i(TAG, "p5: %p, block size: %u, block valid: %d", p5, p5_mcb->size, p5_mcb->is_valid);
     nk_free(p3);;
     p3 = NULL;
     nk_free(p5);
     p5 = NULL;
 
-    printf("[ALLOC] p1 - p5 status: \n");
-    printf("\tp1 block size: %10u   p1 block is_valid: %d \n\r\
-    \tp2 block size: %10u   p2 block is_Valid: %d \n\r\
-    \tp3 block size: %10u   p3 block is_Valid: %d \n\r\
-    \tp4 block size: %10u   p4 block is_Valid: %d \n\r\
-    \tp5 block size: %10u   p5 block is_Valid: %d \n\n",\
-    p1_mcb->size, p1_mcb->is_valid,\
-    p2_mcb->size, p2_mcb->is_valid,\
-    p3_mcb->size, p3_mcb->is_valid,\
-    p4_mcb->size, p4_mcb->is_valid,\
-    p5_mcb->size, p5_mcb->is_valid);
+    Log.i(TAG, "p1 to p5 status: \n");
+    Log.i(TAG, "p1 block size: %10u     block is_valid: %d", p1_mcb->size, p1_mcb->is_valid);
+    Log.i(TAG, "p2 block size: %10u     block is_valid: %d", p2_mcb->size, p2_mcb->is_valid);
+    Log.i(TAG, "p3 block size: %10u     block is_valid: %d", p3_mcb->size, p3_mcb->is_valid);
+    Log.i(TAG, "p4 block size: %10u     block is_valid: %d", p4_mcb->size, p4_mcb->is_valid);
+    Log.i(TAG, "p5 block size: %10u     block is_valid: %d", p5_mcb->size, p5_mcb->is_valid);
 
-   return 1;
+    Log.i(TAG, "==== Private Malloc and Free Test End ====\n");
+
+    return 1;
 }
 
 //buffer_alloc and buffer_free test
 int buffer_alloc_free_test(void)
 {
-    printf("\n[ALLOC] ==== Buufer alloc and free test program ==== \n\n");
+    Log.i(TAG, "==== Buufer alloc and free test Start ====\n");
 
-    printf("[ALLOC] Buf address = %p, Available size = %d\n", Buf, MAX_SIZE_BUF);
-    printf("[ALLOC] p_buf address = %p, Available size = %d\n\n", p_buf, available_buffer_size);
+    Log.i(TAG, "Buf address = %p, Available size = %d", Buf, MAX_SIZE_BUF);
+    Log.i(TAG, "p_buf address = %p, Available size = %d\n", p_buf, available_buffer_size);
 
     char* p1;
     if ((p1 = (char*)buffer_alloc(100*sizeof(char))) == NULL) {
         return -1;
     }
     available_buffer_size -= 100 * sizeof(char);
-    printf("[ALLOC] p1 address      : %p\n", p1);
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Block size      : %lu\n", 100*sizeof(char));
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "p1 address      : %p", p1);
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Block size      : %lu", 100*sizeof(char));
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
     uint32_t* p2;
     if ((p2 = (uint32_t*)buffer_alloc(20*sizeof(int))) == NULL) {
         return -1;
     }
     available_buffer_size -= 20 * sizeof(int);
-    printf("[ALLOC] p2 address      : %p\n", p2);
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Block size      : %lu\n", 20*sizeof(int));
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "p2 address      : %p", p2);
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Block size      : %lu", 20*sizeof(int));
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
     char* p3;
     if ((p3 = (char*)buffer_alloc(20*sizeof(char))) == NULL) {
         return -1;
     }
     available_buffer_size -= 20*sizeof(char);
-    printf("[ALLOC] p3 address      : %p\n", p3);
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Block size      : %lu\n", 20*sizeof(char));
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "p3 address      : %p", p3);
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Block size      : %lu", 20*sizeof(char));
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
     uint32_t* p4;
     if ((p4 = (uint32_t*)buffer_alloc(200*sizeof(int))) == NULL) {
         return -1;
     }
     available_buffer_size -= 200 * sizeof(int);
-    printf("[ALLOC] p4 address      : %p\n", p4);
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Block size      : %lu\n", 200*sizeof(int));
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "p4 address      : %p", p4);
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Block size      : %lu", 200*sizeof(int));
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
 #ifdef _BUFFER_ALLOC_FAILED_TEST
     /*
@@ -325,32 +327,34 @@ int buffer_alloc_free_test(void)
 
     buffer_free((void*)p4);
     p4 = NULL;
-    printf("[ALLOC] After release p4 block: \n");
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "After release p4 block:");
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 /*
     buffer_free((void*)p2);
-    printf("Try to free memory by out-of-order...\n");
-    printf("p_buf   : 0x%p\n", p_buf);
-    printf("p2      : 0x%p\n", p2);
+    Log.i(TAG, "Try to free memory by out-of-order...");
+    Log.i(TAG, "p_buf   : 0x%p", p_buf);
+    Log.i(TAG, "p2      : 0x%p", p2);
 */
     buffer_free((void*)p3);
     p3 = NULL;
-    printf("[ALLOC] After release p3 block: \n");
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "After release p3 block:");
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
     buffer_free((void*)p2);
     p4 = NULL;
-    printf("[ALLOC] After release p2 block: \n");
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "After release p2 block:");
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG, "Available size  : %d\n", available_buffer_size);
 
     buffer_free((void*)p1);
     p4 = NULL;
-    printf("[ALLOC] After release p1 block: \n");
-    printf("[ALLOC] p_buf address   : %p\n", p_buf);
-    printf("[ALLOC] Available size  : %d\n\n", available_buffer_size);
+    Log.i(TAG, "After release p1 block:");
+    Log.i(TAG, "p_buf address   : %p", p_buf);
+    Log.i(TAG,"Available size  : %d\n", available_buffer_size);
+
+    Log.i(TAG, "==== Buufer alloc and free test End ====\n");
 
     return 1;
 }
@@ -358,10 +362,12 @@ int buffer_alloc_free_test(void)
 #ifdef _MODULAR_TEST
 int main(int argc, char* argv[])
 {
+    logger_init();
+
     buffer_alloc_free_test();
 
     if (nk_malloc_free_test() == -1)
-        printf("[ALLOC] Error: your malloc failed!\n");
+        Log.e(TAG, "your malloc failed!");
 
     malloc_aligned_test();
 

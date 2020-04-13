@@ -23,11 +23,14 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#include "../log.h"
 #include "sorts.h"
 
 //#define _DEBUG
+#define TAG     "ARRAY"
 
-//macro for ascending or descending sort
+// macro for ascending or descending sort
 #define SORT_DES 0
 #define SORT_ASC 1
 
@@ -70,27 +73,35 @@ int main(int argc, char** argv)
 int array_sorting_test(void)
 #endif
 {
+#ifdef _MODULAR_TEST
+    logger_init();
+#endif
     struct timeval start;
     struct timeval end;
     unsigned long runtime = 0;
 
     int len = NELEMS(test_arr);
     int *nums = (int*)malloc(len * sizeof(int));
-    printf("\n[ARRAY] ==== Array Sorting Test Program ==== \n\n");
+
+    Log.i(TAG, "==== Array Sorting Test Start ====\n");
+
+    Log.i(TAG, "the orignial array is:");
     log_array(test_arr, len);
 
     for (int i = 0; i < NELEMS(sorts); i++) {
-        //restore the test array after sorting
+        // restore the test array after sorting
         memmove(nums, test_arr, len * sizeof(int));
-        //sorting test
+        // sorting test
         gettimeofday(&start, NULL);
         sorts[i].sf(nums, len);
         gettimeofday(&end, NULL);
         runtime = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-        //output test result
-        printf("[ARRAY] %s runtime: %lu ms: \n", sorts[i].name, runtime);
+        // output test result
+        Log.i(TAG, "%s runtime: %lu ms:", sorts[i].name, runtime);
         log_array(nums, len);
     }
+
+    Log.i(TAG, "==== Array Sorting Test End ====\n");
 
     return 1;
 }
@@ -163,8 +174,8 @@ void merge_sort_ubc_helper(int* nums, int start, int end)
 {
     if (nums == NULL || start >= end) return;
 #ifdef _debug
-    printf("[ALLOC] merge_sort_ubc enter!\n");
-    printf("[ALLOC] start = %d, end = %d\n", start, end);
+    Log.d(TAG, "merge_sort_ubc enter!");
+    Log.d(TAG, "start = %d, end = %d", start, end);
 #endif
     int mid = (start + end) / 2;
     merge_sort_ubc_helper(nums, start, mid);
@@ -176,9 +187,8 @@ void merge_sort_ubc_helper(int* nums, int start, int end)
 void merge(int* nums, int start, int mid, int end)
 {
     int *tmp = malloc((end-start+1) * sizeof(int));
-    if (tmp == NULL)
-    {
-        printf("[ALLOC] Merge: tmp malloc failed !!! \n");
+    if (tmp == NULL) {
+        Log.d(TAG, "Merge: tmp malloc failed!");
         return;
     }
     int i = start;
@@ -403,7 +413,7 @@ void swap(int *x, int *y)
 // print elements in the array
 void log_array(int* nums, int n)
 {
-    printf("[ARRAY] The elements in the array are: ");
+    Log.c(TAG, "The elements in the array are: ");
     for (int i = 0; i < n; i++)
         printf("%d ", nums[i]);
     printf("\n");

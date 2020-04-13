@@ -18,14 +18,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
+
 #include "singly_linkedlist.h"
+#include "../../log.h"
 
 //create one node
 ListNode* create_node (int val, ListNode *next)
 {
 	ListNode *rv = malloc(sizeof(ListNode*));
 	if (rv == NULL) {
-	    printf("[LINKEDLIST] New ListNode Malloc Failed!!!\n");
+	    Log.e(TAG, "New ListNode Malloc Failed!");
 	    return NULL;
 	}
 	rv->val = val;
@@ -51,7 +53,7 @@ Linkedlist* linkedlist_init(void)
 {
     Linkedlist *rv = calloc(1, sizeof(Linkedlist*));
     if (rv == NULL) {
-        printf("[LINKEDLIST] Linkedlist init failed!\n");
+        Log.e(TAG, "Linkedlist init failed!");
 	    return NULL;
     }
     return rv;
@@ -60,14 +62,14 @@ Linkedlist* linkedlist_init(void)
 //get the val of index-th node,  if index is invalid, return -1
 int linkedlist_get(Linkedlist* obj, size_t index)
 {
-    if ((obj->size) <= index){
-        printf("[LINKEDLIST] Can't get at invalid index %zd!\n", index);
+    if ((obj->size) <= index) {
+        Log.w(TAG, "Can't get at invalid index %zd!", index);
         return -1;
     }
     ListNode *cur = obj->head;
     for (int i = 0; i < index; i++)
         cur = cur->next;
-    printf("[LINKEDLIST] element at index %zu is %d\n", index, cur->val);
+    Log.i(TAG, "Element at index %zu is %d", index, cur->val);
     return cur->val;
 }
 
@@ -105,7 +107,7 @@ void linkedlist_append_tail(Linkedlist *obj, int val)
 void linkedlist_insert(Linkedlist *obj, size_t index, int val)
 {
     if (index > (obj->size)) {
-        printf("[LINKEDLIST] Can't insert at invalid index %zd!\n", index);
+        Log.w(TAG, "Can't insert at invalid index %zd!", index);
         return;
     }
 
@@ -128,7 +130,7 @@ void linkedlist_insert(Linkedlist *obj, size_t index, int val)
 void linkedlist_delete(Linkedlist *obj, size_t index)
 {
     if (index < 0 || index >= obj->size) {
-        printf("[LINKEDLIST] Can't delete at invalid index %zd! \n", index);
+        Log.w(TAG, "Can't delete at invalid index %zd!", index);
         return;
     }
 
@@ -175,13 +177,12 @@ void linkedlist_free (Linkedlist *obj)
 void print_list (Linkedlist* obj)
 {
     if ((obj == NULL) || (obj->size == 0)) {
-        printf("[LINKEDLIST] This is an empty linkedlist.\n");
+        Log.w(TAG,"This is an empty linkedlist.");
         return;
     }
     ListNode *cur = obj->head;
-    printf("[LINKEDLIST] The list is: ");
-    while(cur != NULL)
-    {
+    Log.c(TAG, "The list is: ");
+    while(cur != NULL) {
         printf("%d->", cur->val);
         cur = cur->next;
     }
@@ -193,9 +194,8 @@ void print_list (Linkedlist* obj)
 void print_listnode (ListNode* head)
 {
     ListNode *cur = head;
-    printf("[LINKEDLIST] The elements in the list are: ");
-    while(cur != NULL)
-    {
+    Log.c(TAG, "The elements in the list are: ");
+    while(cur != NULL) {
         printf("%d->", cur->val);
         cur = cur->next;
     }

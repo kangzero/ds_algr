@@ -3,6 +3,9 @@
 #include <string.h>
 #include "bits.h"
 #include "../common.h"
+#include "../log.h"
+
+#define TAG     "BITS"
 
 // endianness check - implementation in Linux
 static union {char c[4]; long mylong;} endian_test = {{'l', '?', '?', 'b'}};
@@ -14,13 +17,13 @@ char endianness_check(void)
     uint32_t a = 0x12345678;
     char *p = (char*)&a;
     if (*p == 0x78) {
-        printf("[BITS] little endian system\n");
+        Log.i(TAG, "Little endian system");
         return 1;
     } else if (*p == 0x12) {
-        printf("[BITS] big endian system\n");
+        Log.i(TAG, "Big endian system");
         return 0;
     }
-    printf("[BITS] Error: unknown endianness! \n");
+    Log.w(TAG, "Unknown endianness!");
     return -1;
 }
 
@@ -226,25 +229,30 @@ int main(int argc, char* argv[])
 int bits_test(void)
 #endif
 {
-    printf("\n[BITS] ==== Bits Manipulatation Test Program ==== \n");
-
+#ifdef _MODULAR_TEST
+    logger_init();
+#endif
+    Log.i(TAG, "==== Bits Manipulation Test Start ====\n");
     //endianess test
     if (ENDIANNESS == 'l')
-        printf("[BITS] This is little endian system\n");
+        Log.i(TAG, "This is little endian system");
     else if (ENDIANNESS == 'b')
-        printf("[BITS] This is big endian system\n");
+        Log.i(TAG, "This is big endian system");
     else
-        printf("[BITS] Unknown endianness!\n");
+        Log.e(TAG, "Unknown endianness");
     //endianness_check(); // my implementation passed test also
     int32_t n32 = 0x12ffff78;
-    printf("[BITS] 0x12ffff78 switch to big endian: 0x%08x\n", endianness_swInt32(n32));
+    Log.i(TAG, "0x12ffff78 switch to big endian: 0x%08x", endianness_swInt32(n32));
     int16_t n16 = 0x1234;
-    printf("[BITS] 0x1234 sitch to big endian: 0x%04x\n\n", endianness_swInt16(n16));
+    Log.i(TAG, "0x1234 sitch to big endian: 0x%04x", endianness_swInt16(n16));
 
     // itoa test
     uint32_t num = 0xff;
     char s1[33], s2[33], s3[33];
-    printf("[BITS] Hex: %s\n[BITS] Dec: %s\n[BITS] Bin: %s\n\n", itoa(num, s1, 16), itoa(num, s2, 10), itoa(num, s3, 2));
+    Log.i(TAG, "ITOA verification, num = 0xff:");
+    Log.i(TAG, "Hex: %s", itoa(num, s1, 16));
+    Log.i(TAG, "Dec: %s", itoa(num, s2, 10));
+    Log.i(TAG, "Bin: %s", itoa(num, s3, 2));
     memset(s1, 0, 33*sizeof(char));
     memset(s2, 0, 33*sizeof(char));
     memset(s3, 0, 33*sizeof(char));
@@ -253,38 +261,50 @@ int bits_test(void)
     // change the value of macro definition for different implementation test
     num = 0x12345678;
     uint32_t rev = reverse_bits32(num);
-    printf("[BITS] %s ->\n%s\n\n", itoa(num, s1, 2), itoa(rev, s2, 2));
-    //printf("%d, %d \n", num, rev);
+    Log.i(TAG, "Reverse bits32:");
+    Log.i(TAG, "%s ->", itoa(num, s1, 2)),
+    Log.i(TAG, "%s", itoa(rev, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // swap bits test
     num = 47;
     uint32_t res = swap_bits(num, 1, 5, 3);
-    printf("[BITS] %s -> \n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    Log.i(TAG, "Swap 3 bits(l=1, r=5):");
+    Log.i(TAG, "%s ->", itoa(num, s1, 2));
+    Log.i(TAG, "%s", itoa(res, s2, 2));
+
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // msb test
     num = 233;
     res = msb_int32(num);
-    printf("[BITS] %s: the msb is:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    Log.i(TAG, "Most Significant Bit:");
+    Log.i(TAG, "%s the msb is:", itoa(num, s1, 2));
+    Log.i(TAG, "%s", itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // toggle middle bits test
     num = 0xea;
     res = toggole_middle_bits(num);
-    printf("[BITS] %s: after toggle middle bits:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    Log.i(TAG, "Toggle middle bits:");
+    Log.i(TAG, "%s ->", itoa(num, s1, 2));
+    Log.i(TAG, "%s",itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
 
     // toggle middle bits test
     num = 0xa5ea;
     res = toggle_between_idx(num, 3, 10);
-    printf("[BITS] %s: after toggle between l and r:\n[BITS] %s\n\n", itoa(num, s1, 2), itoa(res, s2, 2));
+    Log.i(TAG, "Toggle between l=3, r=10:");
+    Log.i(TAG, "%s ->", itoa(num, s1, 2));
+    Log.i(TAG, "%s", itoa(res, s2, 2));
     memset(s1, 0, sizeof(s1));
     memset(s2, 0, sizeof(s2));
+
+    Log.i(TAG, "==== Bits Manipulation Test End ====\n");
 
     return 1;
 }

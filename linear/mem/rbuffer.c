@@ -3,7 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
+#include "../log.h"
 #include "rbuffer.h"
+
+#define TAG     "RINGBUF"
 
 #define BUFFER_SIZE 10U
 
@@ -160,70 +164,69 @@ int ring_buffer_test(void)
 {
     uint8_t *buffer = (uint8_t*)malloc(BUFFER_SIZE * sizeof(uint8_t));
 
-    printf("\n[RBUF] ==== C Ring Buffer Check ====\n\n");
+    Log.i(TAG, "==== C Ring Buffer Test Start ====\n");
     ring_buf_t *rb = ring_buf_init(buffer, BUFFER_SIZE);
 
-    printf("[RBUF] Buffer initialized.\n");
+    Log.i(TAG, "Buffer initialized");
     print_buffer_status(rb);
 
-    printf("[RBUF] Adding %d values \n", BUFFER_SIZE-1);
+    Log.i(TAG, "Adding %d values", BUFFER_SIZE-1);
     for (int i = 0; i < (BUFFER_SIZE-1); i++) {
         ring_buf_put(rb, i);
-        printf("[RBUF] head = %lu, tail = %lu, added %d, size now is %zu\n", \
+        Log.i(TAG, "head = %lu, tail = %lu, added %d, size now is %zu", \
                 rb->head, rb->tail, i, ring_buf_size(rb));
     }
     print_buffer_status(rb);
 
-    printf("[RBUF] Adding %d  values \n", BUFFER_SIZE);
+    Log.i(TAG, "Adding %d  values", BUFFER_SIZE);
     for (int i = 0; i < BUFFER_SIZE; i++) {
         ring_buf_put(rb, i);
-        printf("[RBUF] head = %lu, tail = %lu, added %u, Size now: %zu\n",  \
+        Log.i(TAG, "head = %lu, tail = %lu, added %u, Size now: %zu",  \
                 rb->head, rb->tail, i, ring_buf_size(rb));
     }
     print_buffer_status(rb);
 
-    printf("\n[RBUF] Reading back values: ");
+    Log.i(TAG, "Reading back values");
     while (!ring_buf_empty(rb)) {
         uint8_t dat;
         ring_buf_get(rb, &dat);
-        printf("%u ", dat);
+        Log.i(TAG, "%u", dat);
     }
-    printf("\n");
-
     print_buffer_status(rb);
 
-    printf("[RBUF] Adding %d values\n", BUFFER_SIZE+5);
+    Log.i(TAG, "Adding %d values", BUFFER_SIZE+5);
     for (int i = 0; i < (BUFFER_SIZE+5); i++) {
         ring_buf_put(rb, i);
-        printf("[RBUF] Added %u, Size now: %zu \n", i, ring_buf_size(rb));
+        Log.i(TAG, "Added %u, Size now: %zu", i, ring_buf_size(rb));
     }
     print_buffer_status(rb);
 
-    printf("[RBUF] Reading back values: ");
+    Log.i(TAG, "[RBUF] Reading back values");
     while (!ring_buf_empty(rb)) {
         uint8_t dat;
         ring_buf_get(rb, &dat);
-        printf("%u ", dat);
+        Log.i(TAG, "%u", dat);
     }
-    printf("\n");
 
     free(buffer), buffer = NULL;
     print_buffer_status(rb);
     ring_buf_free(rb), rb = NULL;
+
+    Log.i(TAG, "==== C Ring Buffer Test End ====\n");
 
     return 1;
 }
 
 void print_buffer_dat(ring_buf_t *rbuf)
 {
-    printf("[RBUF] Datas in the buffer: ");
+    Log.i(TAG, "Datas in the buffer: ");
     for(int i = 0; i < BUFFER_SIZE; i++)
         printf("%d ", rbuf->buffer[i]);
     printf("\n");
 }
 void print_buffer_status(ring_buf_t *rbuf)
 {
-    printf("[RBUF] Full: %d, Empty: %d, Size: %zu\n",
+    Log.i(TAG, "Full: %d, Empty: %d, Size: %zu",
             ring_buf_full(rbuf),
             ring_buf_empty(rbuf),
             ring_buf_size(rbuf));

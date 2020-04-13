@@ -20,6 +20,7 @@
 
 #include <stddef.h>
 
+#define TAG     "SINGLYLIST"
 //ListNode defnition
 typedef struct node {
     int val;

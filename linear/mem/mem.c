@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+
+#include "../log.h"
 #include "mem.h"
+
+#define TAG     "MEM"
 
 typedef int word;       // word used for optimal copy speed
 
@@ -124,7 +128,7 @@ void* nk_memset(void* dst, int c, size_t n)
 
 int mem_test(void)
 {
-    printf("\n[MEM] ==== Memory Test Program ====\n\n");
+    Log.i(TAG, "==== Memory Test Start ====\n");
 
     const char src[] = "Don’t grieve. Anything you lose comes round in another form. ---By Rumi";
     uint32_t len = sizeof(src);
@@ -132,29 +136,37 @@ int mem_test(void)
     char dst[128];
     if (!nk_memcpy(dst, src, len+1))
         return -1;
-    printf("[MEM] src copied to dst:\n[MEM] src: %s\n[MEM] dst: %s\n", src, dst);
+    Log.i(TAG, "Copy from src to dst");
+    Log.i(TAG, "src string: %s", src);
+    Log.i(TAG, "dst string: %s", dst);
     int len1 = 0;
     while(dst[len1++] != '\0');
-    printf("[MEM] src length = %d, dst length = %d\n", len, len1);
+    Log.i(TAG, "src length = %d, dst length = %d\n", len, len1);
 
-    printf("[MEM] String dst Vs src : ");
+    Log.i(TAG, "String dst Vs src");
     int c = nk_memcmp(dst, src, len);
     if (c > 0) {
-        printf("[MEM] dst > srt \n");
+        Log.i(TAG, "dst > src\n");
     } else if (c < 0) {
-        printf("[MEM] dst < src\n");
+        Log.i(TAG, "dst < src\n");
     } else {
-        printf("[MEM] dst == src\n");
+        Log.i(TAG, "dst == src\n");
     }
 
-    if (!nk_memset(dst, 'k', 13*sizeof(char)))
+    if (!nk_memset(dst, 'a', 13*sizeof(char)))
         return -1;
     //*(dst + len + 1) = '\0';
-    printf("[MEM] Set string to all k:\n[MEM] src: %s\n[MEM] dst: %s\n", src, dst);
+    Log.i(TAG, "Set first 13 chars of string to 'a'");
+    Log.i(TAG, "src: %s", src);
+    Log.i(TAG, "dst: %s\n", dst);
 
     if (!nk_memmove(dst, src, len+1))
         return -1;
-    printf("[MEM] Move string from src:\n[MEM] src: %s\n[MEM] dst: %s\n", src, dst);
+    Log.i(TAG, "Move string from src:");
+    Log.i(TAG, "src: %s", src);
+    Log.i(TAG, "dst: %s\n", dst);
+
+    Log.i(TAG, "==== Memory Test End ====\n");
 
     return 1;
 }
