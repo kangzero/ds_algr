@@ -8,6 +8,9 @@
 #include "mem/alloc.h"
 #include "mem/mem.h"
 #include "mem/rbuffer.h"
+#include "list/slink/slink.h"
+#include "list/dlink/dlink.h"
+#include "list/staticlist/staticlist.h"
 
 extern int slink_test(void);
 extern int dlink_test(void);
@@ -34,6 +37,7 @@ int main(int argc, char* argv[])
     ring_buffer_test();
     slink_test();
     dlink_test();
+    static_list_test();
 
     return 1;
 }

@@ -5,6 +5,7 @@ VPATH = array/ \
 		list/ \
 		list/slink \
 		list/dlink \
+		list/staticlist \
 
 objects = main.o common.o log.o \
 		  array/sorts.o \
@@ -13,6 +14,7 @@ objects = main.o common.o log.o \
 		  list/list_test.o list/list_api.o 	\
 		  list/slink/slink.o \
 		  list/dlink/dlink.o \
+		  list/staticlist/staticlist.o \
 
 cc = gcc
 
@@ -36,6 +38,7 @@ rbuffer.o 	: rbuffer.h
 #	cc -c $^
 slink.o 	: slink.h
 dlink.o 	: dlink.h 
+staticlist.o : staticlist.h
 list_api.o 	: list_api.h 
 list_test.o : list_test.c
 

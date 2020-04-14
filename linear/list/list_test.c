@@ -17,6 +17,7 @@
 
 #include "dlink/dlink.h"
 #include "slink/slink.h"
+#include "staticlist/staticlist.h"
 
 #include "list_api.h"
 #include "../log.h"
@@ -32,12 +33,13 @@ int main(int argc, char *argv[])
     logger_init();
     slink_test();
     dlink_test();
+    static_list_test();
 }
 #endif
 
 int slink_test(void)
 {
-    Log.i(TAG, "==== %s ====\n", __func__);
+    Log.i(TAG, "==== %s start ====\n", __func__);
 
     sList *testlist = slist_init();
     Log.i(TAG, "Initialized testlist, no node in list");
@@ -111,6 +113,8 @@ int slink_test(void)
     testlist = NULL;
     print_list(testlist);
 
+    Log.i(TAG, "==== %s end ====\n", __func__);
+
     return 1;
 }
 
@@ -131,7 +135,7 @@ static employee_t employee[7] = {
 
 int dlink_test(void)
 {
-    Log.i(TAG, "==== %s ====\n", __func__);
+    Log.i(TAG, "==== %s start ====\n", __func__);
 
     Log.i(TAG, "Int test:");
     int arr[7] = {10, 20, 30, 40, 50, 60, 70};
@@ -217,6 +221,8 @@ int dlink_test(void)
         Log.i(TAG, "Dlink list destroyed!");
     else
         Log.i(TAG, "Dlink list destroy failed!");
+
+    Log.i(TAG, "==== %s end ====\n", __func__);
 
     return 1;
 }
