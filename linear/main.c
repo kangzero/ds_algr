@@ -10,6 +10,7 @@
 #include "mem/rbuffer.h"
 
 extern int slink_test(void);
+extern int dlink_test(void);
 
 typedef enum {
     Array = 1,
@@ -32,6 +33,7 @@ int main(int argc, char* argv[])
     mem_test();
     ring_buffer_test();
     slink_test();
+    dlink_test();
 
     return 1;
 }

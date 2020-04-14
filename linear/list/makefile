@@ -3,8 +3,9 @@
 CFLAGS += -D _MODULAR_TEST
 VPATH = 
 
-objects = slink_test.o  list_api.o \
-		  slink/slink.o  \
+objects = list_test.o  list_api.o \
+		  slink/slink.o \
+		  dlink/dlink.o \
 		  ../log.o \
 
 cc = gcc
@@ -13,7 +14,8 @@ testList : $(objects)
 	cc -o testList $(objects)
 
 slink.o 		: slink.h
-slink_test.o 	: slink_test.c
+dlink.o 		: dlink.h
+list_test.o 	: list_test.c
 list_api.o 		: list_api.h
 log.o 			: ../log.h 
 

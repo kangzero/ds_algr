@@ -20,8 +20,6 @@
 
 #include <stddef.h>
 
-#define TAG     "SLINK"
-
 //singly linked list defnition
 typedef struct sListNode_t {
     int val;

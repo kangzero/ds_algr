@@ -22,6 +22,8 @@
 #include "slink.h"
 #include "../../log.h"
 
+#define TAG     "SLINK"
+
 static sListNode* create_node(int val, sListNode *next);
 
 // create one node
