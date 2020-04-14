@@ -9,7 +9,7 @@
 #include "mem/mem.h"
 #include "mem/rbuffer.h"
 
-extern int singly_list_test(void);
+extern int slink_test(void);
 
 typedef enum {
     Array = 1,
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     nk_malloc_free_test();
     mem_test();
     ring_buffer_test();
-    singly_list_test();
+    slink_test();
 
     return 1;
 }

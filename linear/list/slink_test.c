@@ -16,93 +16,93 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include "singly_list/singly_linkedlist.h"
-#include "linkedlist_algorithms.h"
+#include "slink/slink.h"
+#include "list_api.h"
 #include "../log.h"
 
-int singly_list_test(void);
+int slink_test(void);
 
 #ifdef _MODULAR_TEST
 int main(int argc, char *argv[])
 {
     logger_init();
-    singly_list_test();
+    slink_test();
 }
 #endif
 
-int singly_list_test(void)
+int slink_test(void)
 {
-    Log.i(TAG, "==== Linkedlist Test Program ====\n");
+    Log.i(TAG, "==== Singly Linkedlist Test Program ====\n");
 
-    Linkedlist *testlist = linkedlist_init();
+    sList *testlist = slist_init();
     Log.i(TAG, "Initialized testlist, no node in list");
     print_list(testlist);
 
     Log.i(TAG, "Add val=1 @head");
-    linkedlist_add_head(testlist, 1);
+    slist_add_head(testlist, 1);
     print_list(testlist);
 
     Log.i(TAG, "Append val=5 @tail");
-    linkedlist_append_tail(testlist, 5);
+    slist_append_tail(testlist, 5);
     print_list(testlist);
 
     Log.i(TAG, "Insert val=2 @index 1");
-    linkedlist_insert(testlist, 1, 2);
+    slist_insert(testlist, 1, 2);
     print_list(testlist);
 
     Log.i(TAG, "Insert val=3 @index 2");
-    linkedlist_insert(testlist, 2, 3);
+    slist_insert(testlist, 2, 3);
     print_list(testlist);
 
     Log.i(TAG, "Insert val=4 @index 3");
-    linkedlist_insert(testlist, 3, 4);
+    slist_insert(testlist, 3, 4);
     print_list(testlist);
 
     // try to insert node into an invalid index
     Log.i(TAG, "Try to insert a node into an invalid index");
-    linkedlist_insert(testlist, -1, 100);
-    linkedlist_insert(testlist, 10, 101);
+    slist_insert(testlist, -1, 100);
+    slist_insert(testlist, 10, 101);
     print_list(testlist);
 
     Log.i(TAG, "Get element @index 2");
-    linkedlist_get(testlist, 2);
+    slist_get(testlist, 2);
 
     Log.i(TAG, "Append val=6 @tail");
-    linkedlist_append_tail(testlist, 6);
+    slist_append_tail(testlist, 6);
     print_list(testlist); // 1->2->3->4->5->6
 
     Log.i(TAG, "Delete node @index 2");
-    linkedlist_delete(testlist, 2); // now 1->2->4->5->6
+    slist_delete(testlist, 2); // now 1->2->4->5->6
     print_list(testlist);
 
     Log.i(TAG, "Delete node @head");
-    linkedlist_delete(testlist, 0); // now 2->4->5->6
+    slist_delete(testlist, 0); // now 2->4->5->6
     print_list(testlist);
 
     Log.i(TAG, "Delete node @tail");
-    linkedlist_delete(testlist, 3); // now 2->4->5
+    slist_delete(testlist, 3); // now 2->4->5
     print_list(testlist);
 
     Log.i(TAG, "Get node @index 0");
-    linkedlist_get(testlist, 0);
+    slist_get(testlist, 0);
 
     // try to delete node into an invalid index
-    Log.i(TAG, "Try to delete a node at negative index");
-    linkedlist_delete(testlist, -1);
-    linkedlist_delete(testlist, 10);
+    Log.i(TAG, "Try to delete a node at an invlid index");
+    slist_delete(testlist, -1);
+    slist_delete(testlist, 10);
     print_list(testlist);
 
     Log.i(TAG, "Try to get node @ an invalid index");
-    linkedlist_get(testlist, 5);
-    linkedlist_get(testlist, -10);
+    slist_get(testlist, 5);
+    slist_get(testlist, -10);
     print_list(testlist);
 
     Log.i(TAG, "List Reverse:");
-    ListNode *p = linkedlist_reverse(testlist->head);
+    sListNode *p = list_reverse(testlist->head);
     print_listnode(p);
 
     Log.i(TAG, "Free list ... ...");
-    linkedlist_free(testlist);
+    slist_free(testlist);
     testlist = NULL;
     print_list(testlist);
 

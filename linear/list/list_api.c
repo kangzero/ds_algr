@@ -18,13 +18,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "linkedlist_algorithms.h"
+#include "list_api.h"
 
 #define RECURSIVE 1
 #define ITERATIVE 0
 
 //reverse list
-ListNode* linkedlist_reverse(ListNode *head)
+sListNode* list_reverse(sListNode *head)
 {
     if ((head == NULL) || (head->next == NULL))
     {
@@ -32,18 +32,17 @@ ListNode* linkedlist_reverse(ListNode *head)
     }
 
 #if RECURSIVE
-    ListNode *p = linkedlist_reverse(head->next);
+    sListNode *p = list_reverse(head->next);
     head->next->next = head;
     head->next = NULL;
 
     return p;
 #elif ITERATIVE
-    ListNode *cur = head;
-    ListNode *pre = NULL;
+    sListNode *cur = head;
+    sListNode *pre = NULL;
 
-    while (cur != NULL)
-    {
-        ListNode *next = cur->next;
+    while (cur != NULL) {
+        sListNode *next = cur->next;
         cur->next = pre; //reverse happens here
         pre = cur;
         cur = next;
@@ -52,5 +51,4 @@ ListNode* linkedlist_reverse(ListNode *head)
     return pre;
 #endif
 }
-
 

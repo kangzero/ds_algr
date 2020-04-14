@@ -18,8 +18,8 @@
 #ifndef _LINKEDLIST_ALGORITHMS_H_
 #define _LINKEDLIST_ALGORITHMS_H_
 
-#include "singly_list/singly_linkedlist.h"
+#include "slink/slink.h"
 
-ListNode* linkedlist_reverse(ListNode *head);
+sListNode* list_reverse(sListNode *head);
 
 #endif

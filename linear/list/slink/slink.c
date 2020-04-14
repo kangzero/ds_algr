@@ -1,6 +1,6 @@
 /********************************************************************************
  *
- * Filename: singly_linkedlist.c
+ * Filename: slink.c
  * Description: singly linkedlist implementation by C
  *
  * Version: v1.0
@@ -19,13 +19,15 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include "singly_linkedlist.h"
+#include "slink.h"
 #include "../../log.h"
 
-//create one node
-ListNode* create_node (int val, ListNode *next)
+static sListNode* create_node(int val, sListNode *next);
+
+// create one node
+static sListNode* create_node(int val, sListNode *next)
 {
-	ListNode *rv = malloc(sizeof(ListNode*));
+	sListNode *rv = malloc(sizeof(sListNode*));
 	if (rv == NULL) {
 	    Log.e(TAG, "New ListNode Malloc Failed!");
 	    return NULL;
@@ -35,10 +37,10 @@ ListNode* create_node (int val, ListNode *next)
 	return rv;
 }
 
-//free list
-void free_list (ListNode *head)
+// free list
+void sListNode_free(sListNode *head)
 {
-    ListNode *prev;
+    sListNode *prev;
     while (head) {
         prev = head;
         head = head->next;
@@ -48,10 +50,10 @@ void free_list (ListNode *head)
     return;
 }
 
-//Linkedlist init
-Linkedlist* linkedlist_init(void)
+// Linkedlist init
+sList* slist_init(void)
 {
-    Linkedlist *rv = calloc(1, sizeof(Linkedlist*));
+    sList *rv = calloc(1, sizeof(sList*));
     if (rv == NULL) {
         Log.e(TAG, "Linkedlist init failed!");
 	    return NULL;
@@ -59,24 +61,24 @@ Linkedlist* linkedlist_init(void)
     return rv;
 }
 
-//get the val of index-th node,  if index is invalid, return -1
-int linkedlist_get(Linkedlist* obj, size_t index)
+// get the val of index-th node,  if index is invalid, return -1
+int slist_get(sList* obj, size_t index)
 {
     if ((obj->size) <= index) {
         Log.w(TAG, "Can't get at invalid index %zd!", index);
         return -1;
     }
-    ListNode *cur = obj->head;
+    sListNode *cur = obj->head;
     for (int i = 0; i < index; i++)
         cur = cur->next;
     Log.i(TAG, "Element at index %zu is %d", index, cur->val);
     return cur->val;
 }
 
-//add a node before the head
-void linkedlist_add_head(Linkedlist *obj, int val)
+// add a node before the head
+void slist_add_head(sList *obj, int val)
 {
-    ListNode *newnode = create_node(val, obj->head);
+    sListNode *newnode = create_node(val, obj->head);
     obj->head = newnode;
     obj->size += 1;
     if (obj->size == 1)
@@ -84,12 +86,12 @@ void linkedlist_add_head(Linkedlist *obj, int val)
     return;
 }
 
-//append a node at the tail of the linked list
-void linkedlist_append_tail(Linkedlist *obj, int val)
+// append a node at the tail of the linked list
+void slist_append_tail(sList *obj, int val)
 {
-    ListNode *newnode = create_node(val, NULL);
+    sListNode *newnode = create_node(val, NULL);
     if (obj->head == NULL) {
-        linkedlist_add_head(obj, val);
+        slist_add_head(obj, val);
     } else if ((obj->head != NULL) && (obj->tail == NULL)) {
         obj->tail = newnode;
         obj->size += 1;
@@ -104,7 +106,7 @@ void linkedlist_append_tail(Linkedlist *obj, int val)
 // add a node before the idx-th node in the linked list
 // if idx == len of the linked list, append it to the end
 // if idx > len of the linked list, do nothing
-void linkedlist_insert(Linkedlist *obj, size_t index, int val)
+void slist_insert(sList *obj, size_t index, int val)
 {
     if (index > (obj->size)) {
         Log.w(TAG, "Can't insert at invalid index %zd!", index);
@@ -112,22 +114,22 @@ void linkedlist_insert(Linkedlist *obj, size_t index, int val)
     }
 
     if (index == 0)
-        return linkedlist_add_head(obj, val);
+        return slist_add_head(obj, val);
 
     if (index == (obj->size))
-        return linkedlist_append_tail(obj, val);
+        return slist_append_tail(obj, val);
 
-    ListNode *cur = obj->head;
+    sListNode *cur = obj->head;
     for (int i = 1; i < index; i++)
         cur = cur->next;
-    ListNode *newnode = create_node(val, cur->next);
+    sListNode *newnode = create_node(val, cur->next);
     cur->next = newnode;
     obj->size += 1;
     return;
 }
 
 // delete the idx-th node in the linked list if the index is valid
-void linkedlist_delete(Linkedlist *obj, size_t index)
+void slist_delete(sList *obj, size_t index)
 {
     if (index < 0 || index >= obj->size) {
         Log.w(TAG, "Can't delete at invalid index %zd!", index);
@@ -135,7 +137,7 @@ void linkedlist_delete(Linkedlist *obj, size_t index)
     }
 
     if (index == 0) {
-        ListNode *tmp = obj->head;
+        sListNode *tmp = obj->head;
         obj->head = obj->head->next;
         obj->size -= 1;
         free(tmp);
@@ -143,7 +145,7 @@ void linkedlist_delete(Linkedlist *obj, size_t index)
     }
 
     if (index == obj->size - 1) {
-        ListNode *tmp = obj->head;
+        sListNode *tmp = obj->head;
         while (tmp->next != obj->tail)
             tmp = tmp->next;
         free(tmp->next);
@@ -153,10 +155,10 @@ void linkedlist_delete(Linkedlist *obj, size_t index)
         return;
     }
 
-    ListNode *tmp = obj->head;
+    sListNode *tmp = obj->head;
     for (int i = 1; i < index; i++)
         tmp = tmp->next;
-    ListNode *rm = tmp->next;
+    sListNode *rm = tmp->next;
     tmp->next = rm->next;
     obj->size -= 1;
     free(rm);
@@ -164,23 +166,23 @@ void linkedlist_delete(Linkedlist *obj, size_t index)
     return;
 }
 
-//delete linked list
-void linkedlist_free (Linkedlist *obj)
+// delete linked list
+void slist_free(sList *obj)
 {
-    free_list(obj->head);
+    sListNode_free(obj->head);
     free(obj);
     obj = NULL;
     return;
 }
 
-//print linkedlist
-void print_list (Linkedlist* obj)
+// print linkedlist
+void print_list(sList* obj)
 {
     if ((obj == NULL) || (obj->size == 0)) {
         Log.w(TAG,"This is an empty linkedlist.");
         return;
     }
-    ListNode *cur = obj->head;
+    sListNode *cur = obj->head;
     Log.c(TAG, "The list is: ");
     while(cur != NULL) {
         printf("%d->", cur->val);
@@ -190,10 +192,10 @@ void print_list (Linkedlist* obj)
     return;
 }
 
-//print list from head node to null
-void print_listnode (ListNode* head)
+// print list from head node to null
+void print_listnode (sListNode* head)
 {
-    ListNode *cur = head;
+    sListNode *cur = head;
     Log.c(TAG, "The elements in the list are: ");
     while(cur != NULL) {
         printf("%d->", cur->val);
