@@ -1,4 +1,5 @@
 CFLAGS += -D _FULL_SYS
+
 VPATH = array/ \
 		bits/ \
 		mem/ \
@@ -6,6 +7,7 @@ VPATH = array/ \
 		list/slink \
 		list/dlink \
 		list/staticlist \
+		stack/
 
 objects = main.o common.o log.o \
 		  array/sorts.o \
@@ -15,6 +17,7 @@ objects = main.o common.o log.o \
 		  list/slink/slink.o \
 		  list/dlink/dlink.o \
 		  list/staticlist/staticlist.o \
+		  stack/array_stack.o \
 
 cc = gcc
 
@@ -38,9 +41,10 @@ rbuffer.o 	: rbuffer.h
 #	cc -c $^
 slink.o 	: slink.h
 dlink.o 	: dlink.h 
-staticlist.o : staticlist.h
+staticlist.o: staticlist.h
 list_api.o 	: list_api.h 
 list_test.o : list_test.c
+array_stack : array_stack.h
 
 .PHONY : clean
 clean: 

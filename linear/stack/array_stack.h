@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define MAX_SIZE    1024UL
+#define MAX_SIZE    64UL
 #define E_TYPE      int32_t
 
 typedef struct stack_ {
@@ -19,5 +19,6 @@ bool stack_empty(stack* p_stack);
 void stack_push(stack* p_stack, E_TYPE element);
 E_TYPE stack_pop(stack* p_stack);
 void stack_print(stack* p_stack);
+int array_stack_test(void);
 
 #endif
