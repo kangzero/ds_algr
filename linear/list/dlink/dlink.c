@@ -24,18 +24,14 @@
 #define TAG     "DLINK"
 
 // head of the doubly linked list, no element in the head
-static dNode *head = NULL;
+static dNode *dl_head = NULL;
 // number of nodes in the doubly linked list
 static uint32_t count = 0;
 
-static dNode* create_node (void *pval);
 static dNode* get_node (uint32_t index);
-static dNode* get_first_node (void);
-static dNode* get_last_node (void);
-
 
 // create doubly linked list node
-static dNode* create_node (void *pval)
+dNode* dlink_create_node (void *pval)
 {
     dNode *pnode = NULL;
     if ((pnode = malloc(sizeof(dNode))) == NULL) {
@@ -53,10 +49,10 @@ static dNode* create_node (void *pval)
 uint8_t dlink_init (void)
 {
     dNode *p_head = NULL;
-    if ((p_head = create_node(NULL)) == NULL)
+    if ((p_head = dlink_create_node(NULL)) == NULL)
         return -1;
     // set the node to the head
-    head = p_head;
+    dl_head = p_head;
     // set count to 0
     count = 0;
     return 1;
@@ -85,7 +81,7 @@ static dNode* get_node (uint32_t index)
     // search the node from the head
     if (index <= count / 2) {
         uint32_t i = 0;
-        dNode *l_node = head->next;
+        dNode *l_node = dl_head->next;
         while (i++ < index)
             l_node = l_node->next;
         return l_node;
@@ -94,20 +90,20 @@ static dNode* get_node (uint32_t index)
     // search the node from the tail
     uint32_t j = 0;
     uint32_t tail_index = count - index - 1;
-    dNode *r_node = head->prev;
+    dNode *r_node = dl_head->prev;
     while (j++ < tail_index)
         r_node = r_node->prev;
     return r_node;
 }
 
 // get the first node
-static dNode* get_first_node (void)
+dNode* dlink_get_first (void)
 {
     return get_node(0);
 }
 
 // get the last node
-static dNode* get_last_node (void)
+dNode* dlink_get_last (void)
 {
     return get_node(count-1);
 }
@@ -125,14 +121,14 @@ void* dlink_get(uint32_t index)
 
 uint8_t dlink_insert_first (void *pv)
 {
-    dNode *pnode = create_node(pv);
+    dNode *pnode = dlink_create_node(pv);
     if (!pnode)
         return -1;
 
-    pnode->prev = head;
-    pnode->next = head->next;
-    head->next->prev = pnode;
-    head->next = pnode;
+    pnode->prev = dl_head;
+    pnode->next = dl_head->next;
+    dl_head->next->prev = pnode;
+    dl_head->next = pnode;
     count++;
 
     return 0;
@@ -140,14 +136,14 @@ uint8_t dlink_insert_first (void *pv)
 
 uint8_t dlink_append_last (void *pv)
 {
-    dNode *pnode = create_node(pv);
+    dNode *pnode = dlink_create_node(pv);
     if (!pnode)
         return -1;
 
-    pnode->next = head;
-    pnode->prev = head->prev;
-    head->prev->next = pnode;
-    head->prev = pnode;
+    pnode->next = dl_head;
+    pnode->prev = dl_head->prev;
+    dl_head->prev->next = pnode;
+    dl_head->prev = pnode;
     count++;
 
     return 0;
@@ -166,7 +162,7 @@ uint8_t dlink_insert (uint32_t index, void *pv)
     if (!inode)
         return -1;
 
-    dNode *pnode = create_node(pv);
+    dNode *pnode = dlink_create_node(pv);
     if (pnode == NULL)
         return -1;
     pnode->prev = inode->prev;
@@ -208,19 +204,19 @@ uint8_t dlink_delete_last(void)
 // destroy the doubly linked list
 uint8_t dlink_destroy(void)
 {
-    if (!head) {
+    if (!dl_head) {
         Log.e(TAG, "Failed to destroy an empty dlink!");
         return -1;
     }
 
-    dNode *pnode = head->next;
+    dNode *pnode = dl_head->next;
     dNode *tmp = NULL;
-    while (pnode != head) {
+    while (pnode != dl_head) {
         tmp = pnode;
         pnode = pnode->next;
         free(tmp), tmp = NULL;
     }
-    free(head), head = NULL;
+    free(dl_head), dl_head = NULL;
     count = 0;
 
     return 0;

@@ -14,10 +14,9 @@ objects = main.o common.o log.o \
 		  bits/bits.o \
 		  mem/alloc.o mem/mem.o mem/rbuffer.o \
 		  list/list_test.o list/list_api.o 	\
-		  list/slink/slink.o \
-		  list/dlink/dlink.o \
+		  list/slink/slink.o list/dlink/dlink.o \
 		  list/staticlist/staticlist.o \
-		  stack/array_stack.o stack/slink_stack.o\
+		  stack/array_stack.o stack/slink_stack.o stack/dlink_stack.o \
 
 cc = gcc
 
@@ -46,6 +45,7 @@ list_api.o 	: list_api.h
 list_test.o : list_test.c
 array_stack.o : array_stack.h
 slink_stack.o : slink_stack.h
+dlink_stack.o : dlink_stack.h
 
 .PHONY : clean
 clean: 

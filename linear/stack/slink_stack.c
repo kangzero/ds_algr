@@ -91,7 +91,7 @@ static void slink_stack_destroy (void)
 // test interface
 int slink_stack_test(void)
 {
-    Log.i(TAG, "==== %s start ====", __func__);
+    Log.i(TAG, "==== %s start ====\n", __func__);
 
     ELEM_T tmp;
 
@@ -122,7 +122,7 @@ int slink_stack_test(void)
     slink_stack_destroy();
     print_slink_stack();
 
-    Log.i(TAG, "==== %s end ====", __func__);
+    Log.i(TAG, "==== %s end ====\n", __func__);
 
     return 1;
 }

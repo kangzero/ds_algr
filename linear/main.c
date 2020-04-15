@@ -13,6 +13,7 @@
 #include "list/staticlist/staticlist.h"
 #include "stack/array_stack.h"
 #include "stack/slink_stack.h"
+#include "stack/dlink_stack.h"
 
 extern int slink_test(void);
 extern int dlink_test(void);
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
     static_list_test();
     array_stack_test();
     slink_stack_test();
+    dlink_stack_test();
 
     return 1;
 }

@@ -10,6 +10,7 @@
 #define ERROR INT_MIN
 
 extern int slink_stack_test(void);
+extern int dlink_stack_test(void);
 
 // stack init
 stack* stack_init (void)
@@ -80,6 +81,7 @@ int main (void) {
     logger_init();
     array_stack_test();
     slink_stack_test();
+    dlink_stack_test();
 }
 #endif
 
