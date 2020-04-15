@@ -5,9 +5,11 @@
 #include "array_stack.h"
 #include "../log.h"
 
-#define TAG     "STACK"
+#define TAG     "ARRAY_STACK"
 
 #define ERROR INT_MIN
+
+extern int slink_stack_test(void);
 
 // stack init
 stack* stack_init (void)
@@ -76,7 +78,8 @@ void stack_print (stack* p_stack)
 #ifdef _MODULAR_TEST
 int main (void) {
     logger_init();
-    return array_stack_test();
+    array_stack_test();
+    slink_stack_test();
 }
 #endif
 

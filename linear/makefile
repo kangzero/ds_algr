@@ -17,7 +17,7 @@ objects = main.o common.o log.o \
 		  list/slink/slink.o \
 		  list/dlink/dlink.o \
 		  list/staticlist/staticlist.o \
-		  stack/array_stack.o \
+		  stack/array_stack.o stack/slink_stack.o\
 
 cc = gcc
 
@@ -44,7 +44,8 @@ dlink.o 	: dlink.h
 staticlist.o: staticlist.h
 list_api.o 	: list_api.h 
 list_test.o : list_test.c
-array_stack : array_stack.h
+array_stack.o : array_stack.h
+slink_stack.o : slink_stack.h
 
 .PHONY : clean
 clean: 

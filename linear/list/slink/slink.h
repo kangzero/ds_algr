@@ -19,10 +19,13 @@
 #define _SLINK_H_
 
 #include <stddef.h>
+#include <stdint.h>
+
+#define ELEM_T    uint32_t
 
 //singly linked list defnition
 typedef struct sListNode_t {
-    int val;
+    ELEM_T val;
     struct sListNode_t *next;
 } sListNode;
 
@@ -30,15 +33,17 @@ typedef struct sListNode_t {
 typedef struct sList_t {
     sListNode *head;
     sListNode *tail;
-    int size;
+    uint32_t size;
 } sList;
 
+
 sList* slist_init(void);
-int slist_get(sList *obj, size_t index);
+sListNode* slink_create_node(ELEM_T val, sListNode *next);
+ELEM_T slist_get(sList *obj, size_t index);
 void sListNode_free(sListNode *head);
-void slist_add_head(sList *obj, int val);
-void slist_append_tail(sList *obj, int val);
-void slist_insert(sList *obj, size_t index, int val);
+void slist_add_head(sList *obj, ELEM_T val);
+void slist_append_tail(sList *obj, ELEM_T val);
+void slist_insert(sList *obj, size_t index, ELEM_T val);
 void slist_delete(sList *obj, size_t index);
 void slist_free(sList *obj);
 void print_list(sList *obj);

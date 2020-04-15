@@ -24,10 +24,8 @@
 
 #define TAG     "SLINK"
 
-static sListNode* create_node(int val, sListNode *next);
-
 // create one node
-static sListNode* create_node(int val, sListNode *next)
+sListNode* slink_create_node(ELEM_T val, sListNode *next)
 {
 	sListNode *rv = malloc(sizeof(sListNode*));
 	if (rv == NULL) {
@@ -64,23 +62,23 @@ sList* slist_init(void)
 }
 
 // get the val of index-th node,  if index is invalid, return -1
-int slist_get(sList* obj, size_t index)
+ELEM_T slist_get(sList* obj, size_t index)
 {
     if ((obj->size) <= index) {
         Log.w(TAG, "Can't get at invalid index %zd!", index);
         return -1;
     }
     sListNode *cur = obj->head;
-    for (int i = 0; i < index; i++)
+    for (uint32_t i = 0; i < index; i++)
         cur = cur->next;
     Log.i(TAG, "Element at index %zu is %d", index, cur->val);
     return cur->val;
 }
 
 // add a node before the head
-void slist_add_head(sList *obj, int val)
+void slist_add_head(sList *obj, ELEM_T val)
 {
-    sListNode *newnode = create_node(val, obj->head);
+    sListNode *newnode = slink_create_node(val, obj->head);
     obj->head = newnode;
     obj->size += 1;
     if (obj->size == 1)
@@ -89,9 +87,9 @@ void slist_add_head(sList *obj, int val)
 }
 
 // append a node at the tail of the linked list
-void slist_append_tail(sList *obj, int val)
+void slist_append_tail(sList *obj, ELEM_T val)
 {
-    sListNode *newnode = create_node(val, NULL);
+    sListNode *newnode = slink_create_node(val, NULL);
     if (obj->head == NULL) {
         slist_add_head(obj, val);
     } else if ((obj->head != NULL) && (obj->tail == NULL)) {
@@ -108,7 +106,7 @@ void slist_append_tail(sList *obj, int val)
 // add a node before the idx-th node in the linked list
 // if idx == len of the linked list, append it to the end
 // if idx > len of the linked list, do nothing
-void slist_insert(sList *obj, size_t index, int val)
+void slist_insert(sList *obj, size_t index, ELEM_T val)
 {
     if (index > (obj->size)) {
         Log.w(TAG, "Can't insert at invalid index %zd!", index);
@@ -124,7 +122,7 @@ void slist_insert(sList *obj, size_t index, int val)
     sListNode *cur = obj->head;
     for (int i = 1; i < index; i++)
         cur = cur->next;
-    sListNode *newnode = create_node(val, cur->next);
+    sListNode *newnode = slink_create_node(val, cur->next);
     cur->next = newnode;
     obj->size += 1;
     return;
@@ -206,18 +204,6 @@ void print_listnode (sListNode* head)
     printf("NULL\n");
     return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
