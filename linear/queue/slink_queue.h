@@ -1,5 +1,5 @@
-#ifndef _SLINK_STACK_H_
-#define _SLINK_STACK_H_
+#ifndef _SLINK_QUEUE_H_
+#define _SLINK_QUEUE_H_
 
 void  slink_queue_push (ELEM_T val);
 ELEM_T slink_queue_pop (void);

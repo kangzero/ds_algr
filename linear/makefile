@@ -49,8 +49,8 @@ array_stack.o : array_stack.h
 slink_stack.o : slink_stack.h
 dlink_stack.o : dlink_stack.h
 array_queue.o : array_queue.h
-slink_queue.o : slink_stack.h 
-dlink_queue.o : dlink_queue.o 
+slink_queue.o : slink_queue.h 
+dlink_queue.o : dlink_queue.h 
 
 .PHONY : clean
 clean: 

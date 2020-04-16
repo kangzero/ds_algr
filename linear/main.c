@@ -47,6 +47,9 @@ int main(int argc, char* argv[])
     array_stack_test();
     slink_stack_test();
     dlink_stack_test();
+    array_queue_test();
+    slink_queue_test();
+    dlink_queue_test();
 
     return 1;
 }
