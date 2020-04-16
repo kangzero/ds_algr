@@ -7,7 +7,8 @@ VPATH = array/ \
 		list/slink \
 		list/dlink \
 		list/staticlist \
-		stack/
+		stack/ \
+		queue/ \
 
 objects = main.o common.o log.o \
 		  array/sorts.o \
@@ -17,6 +18,7 @@ objects = main.o common.o log.o \
 		  list/slink/slink.o list/dlink/dlink.o \
 		  list/staticlist/staticlist.o \
 		  stack/array_stack.o stack/slink_stack.o stack/dlink_stack.o \
+		  queue/array_queue.o queue/slink_queue.o queue/dlink_queue.o \
 
 cc = gcc
 
@@ -46,6 +48,9 @@ list_test.o : list_test.c
 array_stack.o : array_stack.h
 slink_stack.o : slink_stack.h
 dlink_stack.o : dlink_stack.h
+array_queue.o : array_queue.h
+slink_queue.o : slink_stack.h 
+dlink_queue.o : dlink_queue.o 
 
 .PHONY : clean
 clean: 

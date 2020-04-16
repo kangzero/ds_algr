@@ -14,6 +14,9 @@
 #include "stack/array_stack.h"
 #include "stack/slink_stack.h"
 #include "stack/dlink_stack.h"
+#include "queue/array_queue.h"
+#include "queue/slink_queue.h"
+#include "queue/dlink_queue.h"
 
 extern int slink_test(void);
 extern int dlink_test(void);
