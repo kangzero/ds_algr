@@ -3,20 +3,21 @@
 
 #include "common.h"
 #include "log.h"
-#include "array/sorts.h"
-#include "bits/bits.h"
-#include "mem/alloc.h"
-#include "mem/mem.h"
-#include "mem/rbuffer.h"
-#include "list/slink/slink.h"
-#include "list/dlink/dlink.h"
-#include "list/staticlist/staticlist.h"
-#include "stack/array_stack.h"
-#include "stack/slink_stack.h"
-#include "stack/dlink_stack.h"
-#include "queue/array_queue.h"
-#include "queue/slink_queue.h"
-#include "queue/dlink_queue.h"
+#include "linear/array/sorts.h"
+#include "linear/bits/bits.h"
+#include "linear/mem/alloc.h"
+#include "linear/mem/mem.h"
+#include "linear/mem/rbuffer.h"
+#include "linear/list/slink/slink.h"
+#include "linear/list/dlink/dlink.h"
+#include "linear/list/staticlist/staticlist.h"
+#include "linear/stack/array_stack.h"
+#include "linear/stack/slink_stack.h"
+#include "linear/stack/dlink_stack.h"
+#include "linear/queue/array_queue.h"
+#include "linear/queue/slink_queue.h"
+#include "linear/queue/dlink_queue.h"
+#include "tree/bst/bst.h"
 
 extern int slink_test(void);
 extern int dlink_test(void);
@@ -50,6 +51,8 @@ int main(int argc, char* argv[])
     array_queue_test();
     slink_queue_test();
     dlink_queue_test();
+
+    bst_test();
 
     return 1;
 }

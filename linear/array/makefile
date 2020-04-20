@@ -1,9 +1,9 @@
 # array modular test makefile
 
 CFLAGS += -D _MODULAR_TEST
-VPATH = ../
+VPATH = ../../
 
-objects = sorts.o log.o	\
+objects = sorts.o ../../log.o	\
 
 cc = gcc
 

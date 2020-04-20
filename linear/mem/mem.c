@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "../log.h"
+#include "../../log.h"
 #include "mem.h"
 
 #define TAG     "MEM"

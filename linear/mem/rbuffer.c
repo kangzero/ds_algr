@@ -4,7 +4,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "../log.h"
+#include "../../log.h"
 #include "rbuffer.h"
 
 #define TAG     "RINGBUF"

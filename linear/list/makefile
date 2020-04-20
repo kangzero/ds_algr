@@ -1,13 +1,13 @@
 # modular test makefile
 
 CFLAGS += -D _MODULAR_TEST
-VPATH = 
+VPATH = ../../ 
 
 objects = list_test.o  list_api.o \
 		  slink/slink.o \
 		  dlink/dlink.o \
 		  staticlist/staticlist.o \
-		  ../log.o \
+		  ../../log.o \
 
 cc = gcc
 

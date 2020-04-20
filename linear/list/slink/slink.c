@@ -20,7 +20,7 @@
 #include <malloc.h>
 
 #include "slink.h"
-#include "../../log.h"
+#include "../../../log.h"
 
 #define TAG     "SLINK"
 

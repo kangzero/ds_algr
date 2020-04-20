@@ -19,7 +19,7 @@
 #include <malloc.h>
 
 #include "dlink.h"
-#include "../../log.h"
+#include "../../../log.h"
 
 #define TAG     "DLINK"
 

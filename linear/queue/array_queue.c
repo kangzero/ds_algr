@@ -3,7 +3,7 @@
 #include <limits.h>
 
 #include "array_queue.h"
-#include "../log.h"
+#include "../../log.h"
 
 #define TAG     "ARRAY_QUEUE"
 

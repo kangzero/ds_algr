@@ -1,14 +1,14 @@
 # queue modular test makefile
 
 CFLAGS += -D _MODULAR_TEST
-VPATH = ../   ../list/slink/ 
+VPATH = ../../   ../list/slink/ 
 
 objects = array_queue.o \
 		  slink_queue.o \
 		  dlink_queue.o \
 		  ../list/slink/slink.o \
 		  ../list/dlink/dlink.o \
-		  ../log.o	\
+		  ../../log.o	\
 
 #		 
 

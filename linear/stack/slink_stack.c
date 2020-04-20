@@ -3,7 +3,7 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#include "../log.h"
+#include "../../log.h"
 #include "../list/slink/slink.h"
 #include "slink_stack.h"
 

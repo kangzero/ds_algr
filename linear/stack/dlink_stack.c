@@ -4,7 +4,7 @@
 
 #include "dlink_stack.h"
 #include "../list/dlink/dlink.h"
-#include "../log.h"
+#include "../../log.h"
 
 #define TAG     "DLINK_STACK"
 

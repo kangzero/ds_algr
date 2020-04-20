@@ -3,7 +3,7 @@
 #include <limits.h>
 
 #include "array_stack.h"
-#include "../log.h"
+#include "../../log.h"
 
 #define TAG     "ARRAY_STACK"
 

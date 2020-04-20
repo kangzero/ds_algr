@@ -6,7 +6,7 @@
 #include "alloc.h"
 #include "mem.h"
 #include "rbuffer.h"
-#include "../log.h"
+#include "../../log.h"
 
 #define TAG     "ALLOC"
 

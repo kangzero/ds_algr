@@ -20,7 +20,7 @@
 #include "staticlist/staticlist.h"
 
 #include "list_api.h"
-#include "../log.h"
+#include "../../log.h"
 
 #define TAG     "LINKEDLIST"
 

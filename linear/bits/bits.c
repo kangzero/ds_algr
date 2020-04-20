@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bits.h"
-#include "../common.h"
-#include "../log.h"
+#include "../../common.h"
+#include "../../log.h"
 
 #define TAG     "BITS"
 

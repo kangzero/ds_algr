@@ -1,14 +1,14 @@
 # stack modular test makefile
 
 CFLAGS += -D _MODULAR_TEST
-VPATH = ../   ../list/slink/ 
+VPATH = ../../   ../list/slink/ 
 
 objects = array_stack.o \
 		  slink_stack.o \
 		  dlink_stack.o \
 		  ../list/slink/slink.o \
 		  ../list/dlink/dlink.o \
-		  ../log.o	\
+		  ../../log.o	\
 
 cc = gcc
 

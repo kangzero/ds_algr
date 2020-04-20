@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../log.h"
+#include "../../../log.h"
 
 #define TAG     "STATICLIST"
 #define MAX_SIZE 20U
