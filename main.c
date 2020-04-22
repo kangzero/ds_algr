@@ -18,6 +18,7 @@
 #include "linear/queue/slink_queue.h"
 #include "linear/queue/dlink_queue.h"
 #include "tree/bst/bst.h"
+#include "tree/avl/avl.h"
 
 extern int slink_test(void);
 extern int dlink_test(void);
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
     dlink_queue_test();
 
     bst_test();
+    avl_test();
 
     return 1;
 }

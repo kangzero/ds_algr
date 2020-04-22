@@ -12,6 +12,7 @@ VPATH = linear/array/ \
 		linear/stack/ \
 		linear/queue/ \
 		tree/bst/ \
+		tree/avl/ \
 
 objects = main.o common.o log.o \
 		  linear/array/sorts.o \
@@ -31,6 +32,7 @@ objects = main.o common.o log.o \
 		  linear/queue/slink_queue.o \
 		  linear/queue/dlink_queue.o \
 		  tree/bst/bst.o \
+		  tree/avl/avl.o \
 
 cc = gcc
 
@@ -64,6 +66,7 @@ array_queue.o : array_queue.h
 slink_queue.o : slink_queue.h 
 dlink_queue.o : dlink_queue.h 
 bst.o 	: bst.h 
+avl.o 	: avl.h
 
 .PHONY : clean
 clean: 
